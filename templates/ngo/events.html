@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}My Events - NGO Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>My Events</h2>
+                <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New Event
+                </a>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if events %}
+                <div class="row">
+                    {% for event in events %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="badge bg-{{ 'success' if event.is_active else 'secondary' }}">
+                                    {{ 'Active' if event.is_active else 'Inactive' }}
+                                </span>
+                                <span class="badge bg-info">{{ event.category }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text text-muted">{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}</p>
+                                
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ event.location }}<br>
+                                        <i class="fas fa-calendar"></i> {{ event.start_date.strftime('%b %d, %Y') }} - {{ event.end_date.strftime('%b %d, %Y') }}<br>
+                                        <i class="fas fa-users"></i> Max Volunteers: {{ event.max_volunteers }}
+                                    </small>
+                                </div>
+
+                                {% if event.required_skills %}
+                                <div class="mb-3">
+                                    <small class="text-muted">Required Skills:</small><br>
+                                    {% for skill in event.get_required_skills() %}
+                                        <span class="badge bg-light text-dark me-1">{{ skill }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group w-100" role="group">
+                                    <a href="{{ url_for('ngo_view_event', event_id=event.id) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="{{ url_for('ngo_edit_event', event_id=event.id) }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" 
+                                            onclick="confirmDelete({{ event.id }}, '{{ event.title }}')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No Events Yet</h4>
+                    <p class="text-muted">You haven't created any events yet. Start by creating your first event!</p>
+                    <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Your First Event
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the event "<span id="eventTitle"></span>"?</p>
+                <p class="text-danger"><small>This action cannot be undone. All bookings and time slots will also be deleted.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(eventId, eventTitle) {
+    document.getElementById('eventTitle').textContent = eventTitle;
+    document.getElementById('deleteForm').action = `/ngo/events/${eventId}/delete`;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

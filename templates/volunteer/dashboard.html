@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Volunteer Dashboard - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-user"></i> Welcome, {{ current_user.first_name }}!</h1>
+        <p>Find opportunities and track your impact</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>{{ volunteer.total_hours }}</h3>
+            <p>Hours Volunteered</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ volunteer.total_points }}</h3>
+            <p>Points Earned</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ bookings|length }}</h3>
+            <p>Active Bookings</p>
+        </div>
+        <div class="stat-card">
+            <h3>12</h3>
+            <p>Events Completed</p>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3><i class="fas fa-search"></i> Find Opportunities</h3>
+            <div class="form-group">
+                <label for="search_location">Location</label>
+                <input type="text" id="search_location" placeholder="Enter city or zip code">
+            </div>
+            <div class="form-group">
+                <label for="search_category">Category</label>
+                <select id="search_category">
+                    <option value="">All Categories</option>
+                    <option value="education">Education</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="environment">Environment</option>
+                    <option value="poverty">Poverty Alleviation</option>
+                    <option value="human-rights">Human Rights</option>
+                    <option value="animal-welfare">Animal Welfare</option>
+                    <option value="community-development">Community Development</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="search_date">Date</label>
+                <input type="date" id="search_date">
+            </div>
+            <button class="btn btn-primary" onclick="searchOpportunities()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-trophy"></i> Your Achievements</h3>
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <i class="fas fa-medal" style="color: #ffd700; font-size: 1.5rem; margin-right: 1rem;"></i>
+                    <div>
+                        <strong>First Volunteer</strong>
+                        <p style="margin: 0; color: #666;">Completed your first event</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <i class="fas fa-star" style="color: #ffd700; font-size: 1.5rem; margin-right: 1rem;"></i>
+                    <div>
+                        <strong>10 Hours Milestone</strong>
+                        <p style="margin: 0; color: #666;">Reached 10 volunteer hours</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <i class="fas fa-heart" style="color: #ff6b6b; font-size: 1.5rem; margin-right: 1rem;"></i>
+                    <div>
+                        <strong>Community Hero</strong>
+                        <p style="margin: 0; color: #666;">Helped 5 different organizations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-calendar-check"></i> Your Bookings</h3>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Organization</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.event.title }}</td>
+                        <td>{{ booking.event.ngo.organization_name }}</td>
+                        <td>{{ booking.time_slot.start_time.strftime('%B %d, %Y at %I:%M %p') }}</td>
+                        <td>{{ booking.event.location }}</td>
+                        <td>
+                            {% if booking.status == 'confirmed' %}
+                                <span class="badge badge-success">Confirmed</span>
+                            {% elif booking.status == 'completed' %}
+                                <span class="badge badge-primary">Completed</span>
+                            {% else %}
+                                <span class="badge badge-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            {% if booking.status == 'confirmed' %}
+                            <a href="#" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #666;">No bookings yet. Start by searching for opportunities!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3><i class="fas fa-clock"></i> Recommended Opportunities</h3>
+            <div id="recommended-opportunities">
+                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Food Drive 2024</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Community Help Foundation</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Tomorrow, 2:00 PM - 4:00 PM</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-bookmark"></i> Book Slot
+                    </button>
+                </div>
+                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Tutoring Session</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Education First NGO</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Saturday, 10:00 AM - 12:00 PM</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-bookmark"></i> Book Slot
+                    </button>
+                </div>
+                <div style="padding: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Community Cleanup</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Green Earth Initiative</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Sunday, 9:00 AM - 11:00 AM</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-bookmark"></i> Book Slot
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-chart-bar"></i> Your Impact</h3>
+            <div style="margin-bottom: 1rem;">
+                <p><strong>This Month:</strong></p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-clock" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Hours volunteered: 8
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-star" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Points earned: 40
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-building" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Organizations helped: 3
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <i class="fas fa-users" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        People impacted: 150+
+                    </li>
+                </ul>
+            </div>
+            <div style="text-align: center;">
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Download Certificate
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function searchOpportunities() {
+    const location = document.getElementById('search_location').value;
+    const category = document.getElementById('search_category').value;
+    const date = document.getElementById('search_date').value;
+    
+    // This would typically make an API call to search for opportunities
+    console.log('Searching for opportunities:', { location, category, date });
+    
+    // For demo purposes, show a message
+    alert('Search functionality would connect to the backend API to find matching opportunities based on your criteria.');
+}
+</script>
+{% endblock %}

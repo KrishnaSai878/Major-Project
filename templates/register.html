@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Register - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 600px; margin: 0 auto;">
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Create Your Account</h2>
+            
+            <form method="POST" id="registerForm">
+                <div class="form-group">
+                    <label for="role">I am a:</label>
+                    <select name="role" id="role" required onchange="toggleRoleFields()">
+                        <option value="">Select your role</option>
+                        <option value="ngo">NGO/Organization</option>
+                        <option value="volunteer">Volunteer</option>
+                        <option value="donor">Donor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="first_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" name="phone" id="phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" required>
+                </div>
+
+                <!-- NGO-specific fields -->
+                <div id="ngoFields" style="display: none;">
+                    <h3 style="margin: 2rem 0 1rem 0; color: #667eea;">Organization Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="organization_name">Organization Name</label>
+                        <input type="text" name="organization_name" id="organization_name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Organization Description</label>
+                        <textarea name="description" id="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mission">Mission Statement</label>
+                        <textarea name="mission" id="mission" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="url" name="website" id="website">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select name="category" id="category">
+                            <option value="">Select category</option>
+                            <option value="education">Education</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="environment">Environment</option>
+                            <option value="poverty">Poverty Alleviation</option>
+                            <option value="human-rights">Human Rights</option>
+                            <option value="animal-welfare">Animal Welfare</option>
+                            <option value="community-development">Community Development</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" name="address" id="address">
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" name="state" id="state">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="zip_code">ZIP Code</label>
+                        <input type="text" name="zip_code" id="zip_code">
+                    </div>
+                </div>
+
+                <!-- Volunteer-specific fields -->
+                <div id="volunteerFields" style="display: none;">
+                    <h3 style="margin: 2rem 0 1rem 0; color: #667eea;">Volunteer Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea name="bio" id="bio" rows="3" placeholder="Tell us about yourself and why you want to volunteer"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Skills (select all that apply)</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="teaching">
+                                Teaching
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="medical">
+                                Medical
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="technology">
+                                Technology
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="construction">
+                                Construction
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="cooking">
+                                Cooking
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="driving">
+                                Driving
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="fundraising">
+                                Fundraising
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="skills" value="event-planning">
+                                Event Planning
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interests (select all that apply)</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="education">
+                                Education
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="healthcare">
+                                Healthcare
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="environment">
+                                Environment
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="poverty">
+                                Poverty Alleviation
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="human-rights">
+                                Human Rights
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="animal-welfare">
+                                Animal Welfare
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="community">
+                                Community Development
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" name="interests" value="youth">
+                                Youth Programs
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donor-specific fields -->
+                <div id="donorFields" style="display: none;">
+                    <h3 style="margin: 2rem 0 1rem 0; color: #667eea;">Donor Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="company_name">Company Name (Optional)</label>
+                        <input type="text" name="company_name" id="company_name">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </div>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <p>Already have an account? <a href="{{ url_for('login') }}" style="color: #667eea;">Login here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleRoleFields() {
+    const role = document.getElementById('role').value;
+    
+    // Hide all role-specific fields
+    document.getElementById('ngoFields').style.display = 'none';
+    document.getElementById('volunteerFields').style.display = 'none';
+    document.getElementById('donorFields').style.display = 'none';
+    
+    // Show fields based on selected role
+    if (role === 'ngo') {
+        document.getElementById('ngoFields').style.display = 'block';
+    } else if (role === 'volunteer') {
+        document.getElementById('volunteerFields').style.display = 'block';
+    } else if (role === 'donor') {
+        document.getElementById('donorFields').style.display = 'block';
+    }
+}
+
+// Password confirmation validation
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+});
+</script>
+{% endblock %}

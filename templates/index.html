@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}NGO Connect - Connecting NGOs, Volunteers, and Donors{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1>Connect, Serve, Impact</h1>
+        <p>Join the national NGO Connect platform where NGOs, volunteers, and donors come together to create positive change in communities.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('register') }}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Get Started
+            </a>
+            <a href="#features" class="btn btn-secondary">
+                <i class="fas fa-info-circle"></i> Learn More
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <section id="features" style="margin: 4rem 0;">
+        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">Platform Features</h2>
+        
+        <div class="grid grid-3">
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-building" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>NGO Management</h3>
+                <p>Create and manage your NGO profile, list events, and track volunteer engagement with comprehensive tools.</p>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-users" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>Volunteer Matching</h3>
+                <p>Smart skills-based matching system connects volunteers with opportunities that match their interests and expertise.</p>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-clock" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>2-Hour Slot Booking</h3>
+                <p>Flexible 2-hour time slot system allows volunteers to contribute based on their availability and schedule.</p>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-hand-holding-heart" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>Donor Support</h3>
+                <p>Connect with donors and manage donations to support your organization's mission and projects.</p>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-comments" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>Communication Tools</h3>
+                <p>Built-in messaging system enables seamless communication between NGOs, volunteers, and donors.</p>
+            </div>
+            
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; color: #667eea;"></i>
+                </div>
+                <h3>Analytics & Reporting</h3>
+                <p>Comprehensive analytics and reporting tools to track impact, volunteer hours, and organizational growth.</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin: 4rem 0;">
+        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">How It Works</h2>
+        
+        <div class="grid grid-2">
+            <div class="card">
+                <h3><i class="fas fa-1" style="color: #667eea;"></i> Register & Create Profile</h3>
+                <p>Sign up as an NGO, volunteer, or donor. Create detailed profiles with your skills, interests, and organizational information.</p>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-2" style="color: #667eea;"></i> Browse Opportunities</h3>
+                <p>NGOs can list events and opportunities. Volunteers can browse and filter based on location, skills, and time availability.</p>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-3" style="color: #667eea;"></i> Book Time Slots</h3>
+                <p>Volunteers can book 2-hour time slots for events that match their skills and interests. Real-time availability tracking.</p>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-4" style="color: #667eea;"></i> Track Impact</h3>
+                <p>Monitor volunteer hours, points earned, and project progress. Generate reports and analytics for continuous improvement.</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin: 4rem 0; text-align: center;">
+        <div class="card">
+            <h2 style="margin-bottom: 1rem; color: #333;">Ready to Make a Difference?</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.1rem;">Join thousands of NGOs, volunteers, and donors who are already creating positive change in communities.</p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                <i class="fas fa-rocket"></i> Start Your Journey
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

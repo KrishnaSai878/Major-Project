@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+        <p>Platform overview and management</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>{{ stats.total_users }}</h3>
+            <p>Total Users</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ stats.total_ngos }}</h3>
+            <p>Registered NGOs</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ stats.total_volunteers }}</h3>
+            <p>Active Volunteers</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ stats.total_events }}</h3>
+            <p>Total Events</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ stats.total_bookings }}</h3>
+            <p>Volunteer Bookings</p>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3><i class="fas fa-users"></i> User Management</h3>
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
+                    <i class="fas fa-user-plus"></i> Add User
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> View All Users
+                </a>
+            </div>
+            <p>Manage user accounts, roles, and permissions across the platform.</p>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-building"></i> NGO Verification</h3>
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
+                    <i class="fas fa-check"></i> Verify NGOs
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i> Review Applications
+                </a>
+            </div>
+            <p>Review and verify NGO applications to ensure platform quality.</p>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-chart-bar"></i> Analytics & Reports</h3>
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
+                    <i class="fas fa-download"></i> Generate Reports
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-chart-line"></i> View Analytics
+                </a>
+            </div>
+            <p>Access comprehensive analytics and generate detailed reports.</p>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-cog"></i> Platform Settings</h3>
+            <div style="margin-bottom: 1rem;">
+                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
+                    <i class="fas fa-wrench"></i> System Settings
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-bell"></i> Notifications
+                </a>
+            </div>
+            <p>Configure platform settings, notifications, and system preferences.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-exclamation-triangle"></i> Recent Activity</h3>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>NGO Registration</td>
+                        <td>Community Help Foundation</td>
+                        <td>2 hours ago</td>
+                        <td><span class="badge badge-warning">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>Event Created</td>
+                        <td>Food Drive 2024</td>
+                        <td>4 hours ago</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>Mike Johnson</td>
+                        <td>Volunteer Booking</td>
+                        <td>Booked 2-hour slot</td>
+                        <td>6 hours ago</td>
+                        <td><span class="badge badge-success">Confirmed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

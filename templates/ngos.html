@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}NGOs - Find Organizations{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="dashboard-header">
+    <h1><i class="fas fa-building"></i> Explore NGOs</h1>
+    <p>Browse verified organizations and find opportunities to contribute</p>
+  </div>
+
+  <div class="card">
+    <h3><i class="fas fa-search"></i> Search NGOs</h3>
+    <form method="get" class="grid grid-3">
+      <div class="form-group">
+        <label for="q">Name or Keywords</label>
+        <input type="text" id="q" name="q" value="{{ q }}" placeholder="e.g., education, health, environment">
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="">All</option>
+          <option value="Education" {{ 'selected' if category=='Education' }}>Education</option>
+          <option value="Healthcare" {{ 'selected' if category=='Healthcare' }}>Healthcare</option>
+          <option value="Environment" {{ 'selected' if category=='Environment' }}>Environment</option>
+          <option value="Community Service" {{ 'selected' if category=='Community Service' }}>Community Service</option>
+          <option value="Animal Welfare" {{ 'selected' if category=='Animal Welfare' }}>Animal Welfare</option>
+          <option value="Disaster Relief" {{ 'selected' if category=='Disaster Relief' }}>Disaster Relief</option>
+          <option value="Arts & Culture" {{ 'selected' if category=='Arts & Culture' }}>Arts & Culture</option>
+          <option value="Sports" {{ 'selected' if category=='Sports' }}>Sports</option>
+          <option value="Technology" {{ 'selected' if category=='Technology' }}>Technology</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" value="{{ city or '' }}" placeholder="e.g., Hyderabad, Mumbai">
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="grid grid-3">
+    {% for org in ngos %}
+    <div class="card">
+      <h3>{{ org.organization_name }}</h3>
+      <p style="color:#666; margin-bottom: 0.75rem;">
+        {{ org.city or '' }}{% if org.city and org.state %}, {% endif %}{{ org.state or '' }}
+      </p>
+      {% if org.description %}
+      <p style="margin-bottom: 1rem;">{{ org.description[:140] }}{% if org.description|length > 140 %}...{% endif %}</p>
+      {% endif %}
+      <div>
+        <span class="badge badge-warning">{{ org.category or 'General' }}</span>
+        {% if org.is_verified %}
+        <span class="badge badge-success">Verified</span>
+        {% endif %}
+      </div>
+      <div style="margin-top:1rem;">
+        <a href="#" class="btn btn-primary">View Opportunities</a>
+      </div>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: 1 / -1; text-align:center; color:#666;">
+      No organizations match your filters.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
