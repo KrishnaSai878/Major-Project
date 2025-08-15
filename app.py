@@ -241,6 +241,95 @@ def leaderboards():
         ngo_leaders_by_hours=ngo_leaders_by_hours
     )
 
+@app.route('/achievements')
+def achievements():
+    volunteer_achievements = []
+    ngo_achievements = []
+    donor_achievements = []
+
+    if current_user.is_authenticated:
+        if current_user.role == 'volunteer':
+            volunteer = Volunteer.query.filter_by(user_id=current_user.id).first()
+            if volunteer:
+                stats = queries.get_volunteer_stats(volunteer.id)
+                bookings = queries.get_user_bookings(current_user.id)
+                completed_bookings = [b for b in bookings if b.status == 'completed']
+                unique_ngos = set()
+                for b in completed_bookings:
+                    if getattr(b, 'event', None) and getattr(b.event, 'ngo_id', None):
+                        unique_ngos.add(b.event.ngo_id)
+
+                def ach(title, description, icon_class, earned):
+                    return {
+                        'title': title,
+                        'description': description,
+                        'icon': icon_class,
+                        'earned': bool(earned)
+                    }
+
+                volunteer_achievements = [
+                    ach('First Volunteer', 'Complete your first event', 'fas fa-medal', len(completed_bookings) >= 1),
+                    ach('5 Events Completed', 'Complete 5 events', 'fas fa-trophy', len(completed_bookings) >= 5),
+                    ach('10 Events Completed', 'Complete 10 events', 'fas fa-crown', len(completed_bookings) >= 10),
+                    ach('10 Hours Milestone', 'Reach 10 volunteer hours', 'fas fa-star', stats.get('total_hours', 0) >= 10),
+                    ach('25 Hours Milestone', 'Reach 25 volunteer hours', 'fas fa-star-half-alt', stats.get('total_hours', 0) >= 25),
+                    ach('Community Helper', 'Help 3 different NGOs', 'fas fa-hands-helping', len(unique_ngos) >= 3),
+                    ach('Community Hero', 'Help 5 different NGOs', 'fas fa-heart', len(unique_ngos) >= 5),
+                    ach('Points Collector', 'Earn 100 points', 'fas fa-award', stats.get('total_points', 0) >= 100),
+                    ach('Pro Volunteer', 'Earn 500 points', 'fas fa-chess-king', stats.get('total_points', 0) >= 500),
+                ]
+        elif current_user.role == 'ngo':
+            ngo = NGO.query.filter_by(user_id=current_user.id).first()
+            if ngo:
+                stats = queries.get_ngo_stats(ngo.id)
+                completed_events_count = Event.query.filter_by(ngo_id=ngo.id, status='completed').count()
+
+                def ach(title, description, icon_class, earned):
+                    return {
+                        'title': title,
+                        'description': description,
+                        'icon': icon_class,
+                        'earned': bool(earned)
+                    }
+
+                ngo_achievements = [
+                    ach('Verified Organization', 'Get verified as a trusted NGO', 'fas fa-check-circle', bool(ngo.is_verified)),
+                    ach('First Event Hosted', 'Host your first event', 'fas fa-flag-checkered', stats.get('total_events', 0) >= 1),
+                    ach('5 Events Hosted', 'Host 5 events', 'fas fa-trophy', stats.get('total_events', 0) >= 5),
+                    ach('1 Event Completed', 'Complete one of your events', 'fas fa-calendar-check', completed_events_count >= 1),
+                    ach('100 Volunteer Hours', 'Reach 100 total volunteer hours across your events', 'fas fa-hourglass', stats.get('total_hours', 0) >= 100),
+                    ach('50 Volunteers Engaged', 'Engage 50 distinct volunteers across your events', 'fas fa-users', stats.get('total_volunteers', 0) >= 50),
+                ]
+        elif current_user.role == 'donor':
+            donor = Donor.query.filter_by(user_id=current_user.id).first()
+            donation_history = donor.get_donation_history() if donor else []
+            total_donations_amount = 0
+            try:
+                total_donations_amount = sum((d.get('amount', 0) or 0) for d in donation_history)
+            except Exception:
+                total_donations_amount = 0
+
+            def ach(title, description, icon_class, earned):
+                return {
+                    'title': title,
+                    'description': description,
+                    'icon': icon_class,
+                    'earned': bool(earned)
+                }
+
+            donor_achievements = [
+                ach('First Donation', 'Make your first donation', 'fas fa-hand-holding-heart', len(donation_history) >= 1),
+                ach('Supporter', 'Make 5 donations', 'fas fa-seedling', len(donation_history) >= 5),
+                ach('Philanthropist', 'Donate a total of $1,000 or more', 'fas fa-gem', total_donations_amount >= 1000),
+            ]
+
+    return render_template(
+        'achievements.html',
+        volunteer_achievements=volunteer_achievements,
+        ngo_achievements=ngo_achievements,
+        donor_achievements=donor_achievements
+    )
+
 # NGO Event Management Routes
 @app.route('/ngo/events')
 @login_required

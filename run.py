@@ -90,7 +90,7 @@ def start_server():
     print("-" * 50)
     
     try:
-        from app import socketio
+        from app import app, socketio
         socketio.run(app, host='0.0.0.0', port=5000, debug=True)
     except KeyboardInterrupt:
         print("\n👋 Server stopped. Goodbye!")

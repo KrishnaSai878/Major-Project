@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Achievements - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-trophy"></i> Achievements</h1>
+        <p>Recognizing milestones and impact across the platform</p>
+    </div>
+
+    {% if current_user.is_authenticated %}
+        {% if current_user.role == 'volunteer' %}
+            <div class="card">
+                <h3><i class="fas fa-user"></i> Your Volunteer Achievements</h3>
+                <div class="grid grid-3">
+                    {% for a in volunteer_achievements %}
+                        <div class="stat-card" style="text-align:center; background: {{ 'linear-gradient(135deg,#c6f6d5,#9ae6b4)' if a.earned else 'white' }};">
+                            <div style="font-size:2rem; color: {{ '#2f855a' if a.earned else '#667eea' }}; margin-bottom: 0.5rem;">
+                                <i class="{{ a.icon }}"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.25rem;">{{ a.title }}</h3>
+                            <p style="color:#666;">{{ a.description }}</p>
+                            {% if a.earned %}
+                                <span class="badge badge-success">Earned</span>
+                            {% else %}
+                                <span class="badge badge-warning">In Progress</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% elif current_user.role == 'ngo' %}
+            <div class="card">
+                <h3><i class="fas fa-building"></i> Your NGO Achievements</h3>
+                <div class="grid grid-3">
+                    {% for a in ngo_achievements %}
+                        <div class="stat-card" style="text-align:center; background: {{ 'linear-gradient(135deg,#bee3f8,#90cdf4)' if a.earned else 'white' }};">
+                            <div style="font-size:2rem; color: {{ '#2b6cb0' if a.earned else '#667eea' }}; margin-bottom: 0.5rem;">
+                                <i class="{{ a.icon }}"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.25rem;">{{ a.title }}</h3>
+                            <p style="color:#666;">{{ a.description }}</p>
+                            {% if a.earned %}
+                                <span class="badge badge-success">Earned</span>
+                            {% else %}
+                                <span class="badge badge-warning">In Progress</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% elif current_user.role == 'donor' %}
+            <div class="card">
+                <h3><i class="fas fa-hand-holding-heart"></i> Your Donor Achievements</h3>
+                <div class="grid grid-3">
+                    {% for a in donor_achievements %}
+                        <div class="stat-card" style="text-align:center; background: {{ 'linear-gradient(135deg,#fed7e2,#fbb6ce)' if a.earned else 'white' }};">
+                            <div style="font-size:2rem; color: {{ '#b83280' if a.earned else '#667eea' }}; margin-bottom: 0.5rem;">
+                                <i class="{{ a.icon }}"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.25rem;">{{ a.title }}</h3>
+                            <p style="color:#666;">{{ a.description }}</p>
+                            {% if a.earned %}
+                                <span class="badge badge-success">Earned</span>
+                            {% else %}
+                                <span class="badge badge-warning">In Progress</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <h3><i class="fas fa-users"></i> Platform Achievements</h3>
+            <p>Login to view your personalized achievements. Here are some examples of what you can earn:</p>
+            <ul style="margin-top: 1rem;">
+                <li>Volunteer: First Volunteer, 10 Hours Milestone, Community Hero</li>
+                <li>NGO: Verified Organization, First Event Hosted, 100 Volunteer Hours</li>
+                <li>Donor: First Donation, Supporter, Philanthropist</li>
+            </ul>
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
