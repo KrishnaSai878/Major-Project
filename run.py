@@ -9,6 +9,20 @@ import sys
 import subprocess
 from pathlib import Path
 
+# Patch print to be resilient to UnicodeEncodeError in Windows consoles
+import builtins as _builtins
+_orig_print = print
+def _safe_print(*args, **kwargs):
+    try:
+        _orig_print(*args, **kwargs)
+    except UnicodeEncodeError:
+        safe_args = tuple(
+            (a.encode('ascii', 'ignore').decode() if isinstance(a, str) else a)
+            for a in args
+        )
+        _orig_print(*safe_args, **kwargs)
+_builtins.print = _safe_print
+
 def check_python_version():
     """Check if Python version is compatible."""
     if sys.version_info < (3, 8):
@@ -30,7 +44,11 @@ FLASK_ENV=development
 DEBUG=True
 
 # Database Configuration
-SQLALCHEMY_DATABASE_URI=sqlite:///ngo_connect.db
+# IMPORTANT: You must configure your database connection below
+# Example for MySQL: mysql+mysqlconnector://user:password@localhost/database
+# Example for PostgreSQL: postgresql://user:password@localhost/database
+# Example for MySQL: mysql://user:password@localhost/dbname
+SQLALCHEMY_DATABASE_URI=YOUR_DATABASE_URL_HERE
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 
 # Email Configuration (optional - update if you want email features)
@@ -90,7 +108,7 @@ def start_server():
     print("-" * 50)
     
     try:
-        from app import socketio
+        from app import socketio, app
         socketio.run(app, host='0.0.0.0', port=5000, debug=True)
     except KeyboardInterrupt:
         print("\n👋 Server stopped. Goodbye!")
@@ -123,3 +141,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+

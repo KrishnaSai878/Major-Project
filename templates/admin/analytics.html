@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Admin - Analytics{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-slate-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+    <div class="border-0 shadow-lg rounded-xl bg-white p-6 mb-8">
+      <h1 class="text-3xl text-[#1F2B5B]">Analytics</h1>
+      <p class="text-gray-600">Key metrics and trends across the platform.</p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ total_users or 0 }}</div>
+        <div class="text-gray-600">Total Users</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ total_events or 0 }}</div>
+        <div class="text-gray-600">Total Events</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">₹{{ '%.0f'|format(total_donations_inr or 0) }}</div>
+        <div class="text-gray-600">Donations (INR)</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ active_ngos or 0 }}</div>
+        <div class="text-gray-600">Active NGOs</div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="border-0 shadow-lg rounded-xl bg-white p-6">
+        <h3 class="text-xl text-[#1F2B5B] mb-4">Donations by Month</h3>
+        <div class="h-64 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg flex items-center justify-center text-gray-500">Chart Placeholder</div>
+      </div>
+      <div class="border-0 shadow-lg rounded-xl bg-white p-6">
+        <h3 class="text-xl text-[#1F2B5B] mb-4">Events by Category</h3>
+        <div class="h-64 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg flex items-center justify-center text-gray-500">Chart Placeholder</div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <div class="border-0 shadow-lg rounded-xl bg-white p-6">
+        <h3 class="text-xl text-[#1F2B5B] mb-4">Top NGOs (by Donations)</h3>
+        <table class="table">
+          <thead><tr><th>NGO</th><th>Amount</th></tr></thead>
+          <tbody>
+            {% for row in top_ngos or [] %}
+            <tr>
+              <td>{{ row.ngo_name or row.ngo_id }}</td>
+              <td>₹{{ row.amount or 0 }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2" class="muted">No data</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="border-0 shadow-lg rounded-xl bg-white p-6">
+        <h3 class="text-xl text-[#1F2B5B] mb-4">Top Volunteers (by Hours)</h3>
+        <table class="table">
+          <thead><tr><th>Name</th><th>Hours</th></tr></thead>
+          <tbody>
+            {% for row in top_volunteers or [] %}
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.hours }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2" class="muted">No data</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

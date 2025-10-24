@@ -41,12 +41,15 @@ class DatabaseQueries:
                 or_(
                     self.models.NGO.organization_name.ilike(f'%{search_term}%'),
                     self.models.NGO.description.ilike(f'%{search_term}%'),
-                    self.models.NGO.mission.ilike(f'%{search_term}%')
+                    self.models.NGO.mission.ilike(f'%{search_term}%'),
+                    self.models.NGO.city.ilike(f'%{search_term}%'),
+                    self.models.NGO.state.ilike(f'%{search_term}%')
                 )
             )
         
         if category:
-            query = query.filter(self.models.NGO.category == category)
+            # Case-insensitive contains match for category keywords
+            query = query.filter(self.models.NGO.category.ilike(f"%{category}%"))
         
         if city:
             query = query.filter(self.models.NGO.city.ilike(f'%{city}%'))
@@ -96,7 +99,8 @@ class DatabaseQueries:
             )
         
         if category:
-            query = query.filter(self.models.Event.category == category)
+            # Case-insensitive contains match for category keywords
+            query = query.filter(self.models.Event.category.ilike(f"%{category}%"))
         
         if location:
             query = query.filter(self.models.Event.location.ilike(f'%{location}%'))
@@ -328,21 +332,26 @@ class DatabaseQueries:
         if not volunteer:
             return []
         
-        volunteer_skills = volunteer.get_skills_list()
-        volunteer_interests = volunteer.get_interests_list()
+        # Normalize to lowercase for case-insensitive matching
+        volunteer_skills = [s.strip().lower() for s in volunteer.get_skills_list()]
+        volunteer_interests = [i.strip().lower() for i in volunteer.get_interests_list()]
         
         # Find events that match volunteer's skills or interests
         matching_events = []
         
         for event in self.models.Event.query.filter_by(status='active').all():
-            event_skills = event.get_required_skills()
+            event_skills = [s.strip().lower() for s in event.get_required_skills()]
             
             # Check for skill matches
             skill_matches = len(set(volunteer_skills) & set(event_skills))
             
             # Check for interest matches
             interest_matches = 0
-            if event.category in volunteer_interests:
+            try:
+                evt_cat = (event.category or '').strip().lower()
+            except Exception:
+                evt_cat = ''
+            if evt_cat and evt_cat in volunteer_interests:
                 interest_matches = 1
             
             # Calculate match score

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Volunteer Opportunities - {{ ngo.organization_name }} - NGO Connect{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-light py-4">
+    <div class="container">
+        <!-- NGO Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card card-elevated">
+                    <div class="card-body text-center py-5">
+                        <div class="ngo-header">
+                            <h1 class="display-5 fw-bold text-primary mb-3">{{ ngo.organization_name }}</h1>
+                            {% if ngo.description %}
+                            <p class="lead text-muted mb-4">{{ ngo.description }}</p>
+                            {% endif %}
+                            <div class="ngo-stats">
+                                <span class="badge bg-primary me-3">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ events|length }} Opportunity{{ 's' if events|length != 1 }}
+                                </span>
+                                <span class="badge bg-success">
+                                    <i class="fas fa-users me-1"></i>
+                                    Active Organization
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities Grid -->
+        {% if events %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 mb-0">
+                        <i class="fas fa-hand-holding-heart text-primary me-2"></i>
+                        Available Opportunities
+                    </h2>
+                    <span class="text-muted">{{ events|length }} result{{ 's' if events|length != 1 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for event in events %}
+            <div class="col-xl-4 col-lg-6 mb-4">
+                <div class="card opportunity-card h-100">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ 'success' if event.is_active else 'secondary' }}">
+                                {{ 'Active' if event.is_active else 'Upcoming' }}
+                            </span>
+                            <span class="badge bg-info">{{ event.category or 'General' }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text text-muted">{{ event.description[:140] }}{% if event.description|length > 140 %}...{% endif %}</p>
+                        
+                        <div class="opportunity-details">
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                <span>{{ event.location or 'Multiple Locations' }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-calendar text-primary"></i>
+                                <span>
+                                    {% if event.start_date %}
+                                        {{ event.start_date.strftime('%b %d, %Y') }}
+                                        {% if event.end_date and event.end_date != event.start_date %}
+                                            - {{ event.end_date.strftime('%b %d, %Y') }}
+                                        {% endif %}
+                                    {% else %}
+                                        Flexible Schedule
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users text-primary"></i>
+                                <span>Up to {{ event.max_volunteers or 'unlimited' }} volunteers</span>
+                            </div>
+                            {% if event.required_skills and event.get_required_skills() and 'None' not in event.get_required_skills() %}
+                            <div class="detail-item">
+                                <i class="fas fa-tools text-primary"></i>
+                                <span>
+                                    {% for skill in event.get_required_skills()[:3] %}
+                                        <span class="badge bg-light text-dark me-1">{{ skill }}</span>
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-grid">
+                            <a href="{{ url_for('volunteer_event_detail', event_id=event.id) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>View Details & Sign Up
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-elevated">
+                    <div class="card-body text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-plus text-muted fa-4x mb-4"></i>
+                            <h3 class="text-muted mb-3">No Current Opportunities</h3>
+                            <p class="text-muted mb-4">
+                                {{ ngo.organization_name }} doesn't have any active volunteer opportunities at the moment.
+                            </p>
+                            <div class="alert alert-info d-inline-block">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Check back later for new volunteer opportunities
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Call to Action -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center py-5">
+                        <h3 class="mb-3">Interested in Volunteering?</h3>
+                        <p class="mb-4">Create an account to get notified when new opportunities become available</p>
+                        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Create Volunteer Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ngo-header {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.opportunity-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.opportunity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.opportunity-details {
+    margin-top: 1rem;
+}
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.detail-item i {
+    width: 20px;
+    margin-right: 0.5rem;
+}
+.card-elevated {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+.empty-state {
+    padding: 2rem 0;
+}
+</style>
+{% endblock %}

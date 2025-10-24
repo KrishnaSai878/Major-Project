@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Admin - Users{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-slate-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+    <div class="border-0 shadow-lg rounded-xl bg-white p-6 mb-8">
+      <h1 class="text-3xl text-[#1F2B5B]">User Management</h1>
+      <p class="text-gray-600">Browse and manage platform users.</p>
+    </div>
+
+    <div class="border-0 shadow-lg rounded-xl bg-white overflow-hidden">
+      <div class="p-6 flex items-center justify-between gap-4 border-b">
+        <h3 class="text-xl text-[#1F2B5B]">Users</h3>
+        <form method="GET" class="flex items-center gap-2">
+          <input class="h-10 border-2 rounded-lg px-3" type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search users" />
+          <select class="h-10 border-2 rounded-lg px-3" name="role">
+            <option value="">All roles</option>
+            {% for r in ['admin','ngo','volunteer','donor'] %}
+              <option value="{{ r }}" {% if request.args.get('role')==r %}selected{% endif %}>{{ r|capitalize }}</option>
+            {% endfor %}
+          </select>
+          <button class="bg-[#1F2B5B] text-white rounded-full px-4 py-2" type="submit">Filter</button>
+        </form>
+      </div>
+      <div class="p-0">
+        <table class="table">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th></tr></thead>
+          <tbody>
+            {% for u in users or [] %}
+            <tr>
+              <td>{{ u.first_name }} {{ u.last_name }}</td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.role }}</td>
+              <td>{{ 'Active' if u.is_active else 'Inactive' }}</td>
+              <td>{{ (u.created_at.strftime('%Y-%m-%d') if u.created_at else '') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="muted">No users found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

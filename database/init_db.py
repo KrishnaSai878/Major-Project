@@ -85,7 +85,6 @@ def create_sample_data():
             city=org['city'],
             state=org['state'],
             zip_code=f'{10000+i}',
-            phone=f'555-{2000+i}',
             email=f'contact@{org["name"].lower().replace(" ", "")}.org',
             category=org['category'],
             established_year=2010 + i,
@@ -301,8 +300,7 @@ def create_sample_data():
             description=f'This is a sample project for {ngo.organization_name}',
             status='active',
             start_date=datetime.now() - timedelta(days=30),
-            end_date=datetime.now() + timedelta(days=60),
-            progress=25 + (i * 15)
+            end_date=datetime.now() + timedelta(days=60)
         )
         db.session.add(project)
     
@@ -327,3 +325,9 @@ def init_database():
 
 if __name__ == '__main__':
     init_database()
+
+
+
+
+
+

@@ -1,90 +1,161 @@
 {% extends "base.html" %}
-
-{% block title %}My Events - NGO Dashboard{% endblock %}
-
+{% block title %}Event Management - {{ ngo.organization_name }} - NGO Connect{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>My Events</h2>
-                <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Create New Event
-                </a>
-            </div>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            {% if events %}
-                <div class="row">
-                    {% for event in events %}
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="badge bg-{{ 'success' if event.is_active else 'secondary' }}">
-                                    {{ 'Active' if event.is_active else 'Inactive' }}
-                                </span>
-                                <span class="badge bg-info">{{ event.category }}</span>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ event.title }}</h5>
-                                <p class="card-text text-muted">{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}</p>
-                                
-                                <div class="mb-3">
-                                    <small class="text-muted">
-                                        <i class="fas fa-map-marker-alt"></i> {{ event.location }}<br>
-                                        <i class="fas fa-calendar"></i> {{ event.start_date.strftime('%b %d, %Y') }} - {{ event.end_date.strftime('%b %d, %Y') }}<br>
-                                        <i class="fas fa-users"></i> Max Volunteers: {{ event.max_volunteers }}
-                                    </small>
-                                </div>
-
-                                {% if event.required_skills %}
-                                <div class="mb-3">
-                                    <small class="text-muted">Required Skills:</small><br>
-                                    {% for skill in event.get_required_skills() %}
-                                        <span class="badge bg-light text-dark me-1">{{ skill }}</span>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-                            <div class="card-footer">
-                                <div class="btn-group w-100" role="group">
-                                    <a href="{{ url_for('ngo_view_event', event_id=event.id) }}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                    <a href="{{ url_for('ngo_edit_event', event_id=event.id) }}" class="btn btn-outline-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" 
-                                            onclick="confirmDelete({{ event.id }}, '{{ event.title }}')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+<div class="min-h-screen bg-light py-4">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h2 mb-2">
+                            <i class="fas fa-calendar-alt text-primary me-3"></i>
+                            Event Management
+                        </h1>
+                        <p class="text-muted mb-0">Manage your organization's volunteer opportunities</p>
                     </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center py-5">
-                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">No Events Yet</h4>
-                    <p class="text-muted">You haven't created any events yet. Start by creating your first event!</p>
-                    <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Create Your First Event
+                    <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create New Event
                     </a>
                 </div>
-            {% endif %}
+            </div>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Events Grid -->
+        {% if events %}
+        <div class="row">
+            {% for event in events %}
+            <div class="col-xl-4 col-lg-6 mb-4">
+                <div class="card card-elevated h-100 event-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ 'success' if event.is_active else 'secondary' }}">
+                                {{ 'Active' if event.is_active else 'Inactive' }}
+                            </span>
+                            <span class="badge bg-info">{{ event.category or 'General' }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text text-muted">{{ event.description[:120] }}{% if event.description|length > 120 %}...{% endif %}</p>
+                        
+                        <div class="event-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                <span>{{ event.location or 'Location TBD' }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar text-primary"></i>
+                                <span>
+                                    {% if event.start_date %}
+                                        {{ event.start_date.strftime('%b %d, %Y') }}
+                                        {% if event.end_date and event.end_date != event.start_date %}
+                                            - {{ event.end_date.strftime('%b %d, %Y') }}
+                                        {% endif %}
+                                    {% else %}
+                                        Date TBD
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-users text-primary"></i>
+                                <span>
+                                    {{ event.current_volunteers or 0 }}/{{ event.max_volunteers or 0 }} volunteers
+                                </span>
+                            </div>
+                            {% if event.required_skills %}
+                            <div class="meta-item">
+                                <i class="fas fa-tools text-primary"></i>
+                                <span>
+                                    {% for skill in event.get_required_skills()[:2] %}
+                                        <span class="badge bg-light text-dark me-1">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if event.get_required_skills()|length > 2 %}
+                                        <span class="badge bg-light text-dark">+{{ event.get_required_skills()|length - 2 }}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100" role="group">
+                            <a href="{{ url_for('ngo_view_event', event_id=event.id) }}" 
+                               class="btn btn-outline-primary btn-sm" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ url_for('ngo_edit_event', event_id=event.id) }}" 
+                               class="btn btn-outline-warning btn-sm" title="Edit Event">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ url_for('ngo_attendance_qr', event_id=event.id) }}" 
+                               class="btn btn-outline-success btn-sm" title="QR Attendance">
+                                <i class="fas fa-qrcode"></i>
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-outline-danger btn-sm" 
+                                    title="Delete Event"
+                                    onclick="confirmDelete({{ event.id }}, '{{ event.title|replace("'", "\\'") }}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-elevated">
+                    <div class="card-body text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times text-muted fa-4x mb-4"></i>
+                            <h3 class="text-muted mb-3">No Events Created Yet</h3>
+                            <p class="text-muted mb-4">Start by creating your first volunteer opportunity to engage with volunteers</p>
+                            <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>Create Your First Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pagination (if needed) -->
+        {% if events and events|length >= 9 %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Event pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -93,22 +164,63 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Confirm Deletion
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the event "<span id="eventTitle"></span>"?</p>
-                <p class="text-danger"><small>This action cannot be undone. All bookings and time slots will also be deleted.</small></p>
+                <p>Are you sure you want to delete the event "<strong id="eventTitle"></strong>"?</p>
+                <p class="text-danger small mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This action cannot be undone. All associated time slots and volunteer bookings will be permanently deleted.
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete Event</button>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Event
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.event-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 12px;
+}
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.event-meta {
+    margin-top: 1rem;
+}
+.meta-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+.meta-item i {
+    width: 20px;
+    margin-right: 0.5rem;
+}
+.empty-state {
+    padding: 2rem 0;
+}
+.card-elevated {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+</style>
 
 <script>
 function confirmDelete(eventId, eventTitle) {

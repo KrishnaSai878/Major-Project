@@ -1,166 +1,110 @@
 {% extends "base.html" %}
-
 {% block title %}NGO Dashboard - NGO Connect{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="dashboard-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1><i class="fas fa-building"></i> {{ ngo.organization_name }}</h1>
-                <p>Manage your organization and volunteer opportunities</p>
-            </div>
-            <div>
-                <a href="{{ url_for('ngo_events') }}" class="btn btn-primary">
-                    <i class="fas fa-calendar-alt"></i> Manage Events
-                </a>
-            </div>
+<div class="min-h-screen pt-24 pb-12" style="background:#0b1220;">
+  <div class="container mx-auto px-6">
+    <div class="rounded-2xl p-6 mb-8" style="background:#0f172a; box-shadow:0 20px 60px rgba(2,6,23,.35) inset, 0 8px 30px rgba(2,6,23,.25);">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-semibold" style="color:#E5E7EB;">{{ ngo.organization_name }}</h1>
+          <p class="mt-1" style="color:#9CA3AF;">Manage your organization and volunteer opportunities</p>
         </div>
+        <a href="/ngo/events" class="btn btn-primary btn-rounded"><i class="fa-solid fa-calendar-days"></i> Manage Events</a>
+      </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>{{ events|length }}</h3>
-            <p>Active Events</p>
-        </div>
-        <div class="stat-card">
-            <h3>24</h3>
-            <p>Total Volunteers</p>
-        </div>
-        <div class="stat-card">
-            <h3>156</h3>
-            <p>Hours Contributed</p>
-        </div>
-        <div class="stat-card">
-            <h3>8</h3>
-            <p>Completed Projects</p>
-        </div>
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#8b5cf6;">{{ (active_events if active_events is defined else total_events) or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Active Events</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#8b5cf6;">{{ total_volunteers or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Total Volunteers</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#8b5cf6;">{{ total_hours or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Hours Contributed</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#8b5cf6;">{{ completed_projects or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Completed Projects</div>
+      </div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-calendar-plus"></i> Create New Event</h3>
-            <p style="color: #666; margin-bottom: 1.5rem;">Create a new volunteer opportunity with detailed information and time slots.</p>
-            <a href="{{ url_for('ngo_create_event') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Create New Event
-            </a>
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-2" style="color:#E5E7EB;"><i class="fa-regular fa-calendar-plus"></i> Create New Event</h3>
+        <p class="mb-4" style="color:#9CA3AF;">Create a new volunteer opportunity with detailed information and time slots.</p>
+        <a href="/ngo/events" class="btn btn-primary btn-rounded"><i class="fa-solid fa-plus"></i> Create New Event</a>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-3" style="color:#E5E7EB;"><i class="fa-solid fa-chart-line"></i> Quick Stats</h3>
+        <div class="space-y-3" style="color:#E5E7EB;">
+          <div class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-solid fa-user-group"></i> New volunteers:</span><span style="color:#94a3b8;">{{ new_volunteers or 0 }}</span></div>
+          <div class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-regular fa-clock"></i> Hours logged:</span><span style="color:#94a3b8;">{{ hours_logged or 0 }}</span></div>
+          <div class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-regular fa-calendar-check"></i> Events completed:</span><span style="color:#94a3b8;">{{ events_completed or 0 }}</span></div>
+          <div class="flex items-center justify-between"><span><i class="fa-regular fa-star"></i> Average rating:</span><span style="color:#94a3b8;">{{ average_rating or '4.8/5' }}</span></div>
         </div>
+      </div>
+    </div>
 
-        <div class="card">
-            <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
-            <div style="margin-bottom: 1rem;">
-                <p><strong>This Month:</strong></p>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-users" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        New volunteers: 12
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-clock" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Hours logged: 48
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-calendar-check" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Events completed: 3
-                    </li>
-                    <li style="padding: 0.5rem 0;">
-                        <i class="fas fa-star" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Average rating: 4.8/5
-                    </li>
-                </ul>
+    <div class="rounded-2xl p-0 overflow-hidden mb-8" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+      <div class="p-6 border-b border-slate-800"><h3 class="text-xl font-semibold" style="color:#E5E7EB;"><i class="fa-regular fa-calendar-days"></i> Your Events</h3></div>
+      <div class="p-0">
+        <table class="table" style="color:#E5E7EB;">
+          <thead><tr><th>Event</th><th>Date & Time</th><th>Location</th><th>Volunteers</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for e in events %}
+            <tr>
+              <td>{{ e.title }}</td>
+              <td>{{ (e.start_date.strftime('%B %d, %Y at %I:%M %p') if e.start_date else '') }}</td>
+              <td>{{ e.city or e.location or '-' }}</td>
+              <td>{{ (e.current_volunteers if e.current_volunteers is defined else 0) }} / {{ (e.max_volunteers if e.max_volunteers is defined else '-') }}</td>
+              <td><span class="badge {{ 'badge-success' if e.is_active else 'badge-warning' }}">{{ 'Active' if e.is_active else 'Draft' }}</span></td>
+              <td class="flex gap-2">
+                <a class="btn btn-secondary btn-rounded" href="/ngo/events">Edit</a>
+                <a class="btn btn-accent btn-rounded" href="{{ url_for('volunteer_event_detail', event_id=e.id) }}">View</a>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="muted">No events</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25); max-height:320px; overflow:auto;">
+        <h3 class="text-xl font-semibold mb-3" style="color:#E5E7EB;"><i class="fa-solid fa-users"></i> Recent Volunteers</h3>
+        <div class="space-y-4" style="color:#E5E7EB;">
+          {% for b in recent_volunteers or [] %}
+            <div class="border-b border-slate-700 pb-3">
+              <div class="font-semibold">{{ b.name or 'Volunteer' }}</div>
+              <div class="text-sm" style="color:#9CA3AF;">Booked: {{ b.event_title or '-' }}</div>
+              <div class="text-xs mt-1" style="color:#9CA3AF;">{{ b.when or '' }}</div>
             </div>
+          {% else %}
+            <div class="text-sm" style="color:#9CA3AF;">No recent volunteers.</div>
+          {% endfor %}
         </div>
-    </div>
-
-    <div class="card">
-        <h3><i class="fas fa-calendar-alt"></i> Your Events</h3>
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Event</th>
-                        <th>Date & Time</th>
-                        <th>Location</th>
-                        <th>Volunteers</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for event in events %}
-                    <tr>
-                        <td>{{ event.title }}</td>
-                        <td>{{ event.start_date.strftime('%B %d, %Y at %I:%M %p') }}</td>
-                        <td>{{ event.location }}</td>
-                        <td>{{ event.max_volunteers }} / {{ event.max_volunteers }}</td>
-                        <td>
-                            {% if event.is_active %}
-                                <span class="badge badge-success">Active</span>
-                            {% else %}
-                                <span class="badge badge-danger">Inactive</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('ngo_edit_event', event_id=event.id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <a href="{{ url_for('ngo_view_event', event_id=event.id) }}" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #666;">No events created yet. Create your first event above!</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-users"></i> Recent Volunteers</h3>
-            <div style="max-height: 300px; overflow-y: auto;">
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <strong>Sarah Johnson</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">Booked: Food Drive 2024</p>
-                    <small style="color: #999;">2 hours ago</small>
-                </div>
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <strong>Mike Chen</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">Booked: Community Cleanup</p>
-                    <small style="color: #999;">1 day ago</small>
-                </div>
-                <div style="padding: 1rem;">
-                    <strong>Emily Davis</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">Booked: Tutoring Session</p>
-                    <small style="color: #999;">2 days ago</small>
-                </div>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25); max-height:320px; overflow:auto;">
+        <h3 class="text-xl font-semibold mb-3" style="color:#E5E7EB;"><i class="fa-regular fa-comments"></i> Recent Messages</h3>
+        <div class="space-y-4" style="color:#E5E7EB;">
+          {% for m in recent_messages or [] %}
+            <div class="border-b border-slate-700 pb-3">
+              <div class="font-semibold">From: {{ m.sender or 'User' }}</div>
+              <div class="text-sm" style="color:#9CA3AF;">"{{ m.text or '' }}"</div>
+              <div class="text-xs mt-1" style="color:#9CA3AF;">{{ m.when or '' }}</div>
             </div>
+          {% else %}
+            <div class="text-sm" style="color:#9CA3AF;">No recent messages.</div>
+          {% endfor %}
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-comments"></i> Recent Messages</h3>
-            <div style="max-height: 300px; overflow-y: auto;">
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <strong>From: Sarah Johnson</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">"What should I bring to the food drive?"</p>
-                    <small style="color: #999;">1 hour ago</small>
-                </div>
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <strong>From: Mike Chen</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">"Can I bring my friend to help?"</p>
-                    <small style="color: #999;">3 hours ago</small>
-                </div>
-                <div style="padding: 1rem;">
-                    <strong>From: Emily Davis</strong>
-                    <p style="margin: 0.25rem 0; color: #666;">"The tutoring session was great!"</p>
-                    <small style="color: #999;">1 day ago</small>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

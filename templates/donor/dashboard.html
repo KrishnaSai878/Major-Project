@@ -1,257 +1,172 @@
 {% extends "base.html" %}
-
 {% block title %}Donor Dashboard - NGO Connect{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="dashboard-header">
-        <h1><i class="fas fa-hand-holding-heart"></i> Welcome, {{ current_user.first_name }}!</h1>
-        <p>Support causes and track your impact</p>
+<div class="min-h-screen pt-24 pb-12" style="background:#0b1220;">
+  <div class="container mx-auto px-6">
+    <div class="rounded-2xl p-6 mb-8" style="background:#0f172a; box-shadow:0 20px 60px rgba(2,6,23,.35) inset, 0 8px 30px rgba(2,6,23,.25);">
+      <h1 class="text-3xl font-semibold" style="color:#E5E7EB;">Welcome, {{ donor.user.first_name if donor and donor.user else 'Donor' }}</h1>
+      <p class="mt-1" style="color:#9CA3AF;">Your giving impact at a glance.</p>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>$2,450</h3>
-            <p>Total Donated</p>
-        </div>
-        <div class="stat-card">
-            <h3>8</h3>
-            <p>Organizations Supported</p>
-        </div>
-        <div class="stat-card">
-            <h3>15</h3>
-            <p>Donations Made</p>
-        </div>
-        <div class="stat-card">
-            <h3>1,200+</h3>
-            <p>Lives Impacted</p>
-        </div>
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#8b5cf6;">₹{{ '%.0f'|format(total_donated or 0) }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Total Donated</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#60a5fa;">{{ organizations_supported or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Organizations Supported</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#34d399;">{{ total_donations or 0 }}</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Donations Made</div>
+      </div>
+      <div class="rounded-xl p-6 text-center" style="background:#0f172a; color:#E5E7EB; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <div class="text-2xl" style="color:#a78bfa;">{{ lives_impacted or 0 }}+</div>
+        <div class="mt-1 text-sm" style="color:#94a3b8;">Lives Impacted</div>
+      </div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-search"></i> Discover NGOs</h3>
-            <div class="form-group">
-                <label for="search_category">Category</label>
-                <select id="search_category">
-                    <option value="">All Categories</option>
-                    <option value="education">Education</option>
-                    <option value="healthcare">Healthcare</option>
-                    <option value="environment">Environment</option>
-                    <option value="poverty">Poverty Alleviation</option>
-                    <option value="human-rights">Human Rights</option>
-                    <option value="animal-welfare">Animal Welfare</option>
-                    <option value="community-development">Community Development</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="search_location">Location</label>
-                <input type="text" id="search_location" placeholder="Enter city or state">
-            </div>
-            <div class="form-group">
-                <label for="search_amount">Donation Amount</label>
-                <select id="search_amount">
-                    <option value="">Any Amount</option>
-                    <option value="0-50">$0 - $50</option>
-                    <option value="50-100">$50 - $100</option>
-                    <option value="100-500">$100 - $500</option>
-                    <option value="500+">$500+</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" onclick="searchNGOs()">
-                <i class="fas fa-search"></i> Search NGOs
-            </button>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-chart-pie"></i> Donation Impact</h3>
-            <div style="margin-bottom: 1rem;">
-                <p><strong>Your donations have helped:</strong></p>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-graduation-cap" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Provide education to 50+ children
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-heartbeat" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Support healthcare for 200+ families
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-leaf" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Plant 500+ trees in communities
-                    </li>
-                    <li style="padding: 0.5rem 0;">
-                        <i class="fas fa-home" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Build 3 homes for families in need
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-4" style="color:#E5E7EB;"><i class="fa-solid fa-magnifying-glass"></i> Discover NGOs</h3>
+        <form action="{{ url_for('ngos_directory') }}" method="get" class="grid gap-4">
+          <div>
+            <label class="block mb-1" style="color:#9CA3AF;">Category</label>
+            <select class="w-full h-12 border-2 rounded-lg px-3" name="category">
+              <option value="">All Categories</option>
+              <option>Education</option>
+              <option>Healthcare</option>
+              <option>Environment</option>
+              <option>Poverty</option>
+            </select>
+          </div>
+          <div>
+            <label class="block mb-1" style="color:#9CA3AF;">Location</label>
+            <input class="w-full h-12 border-2 rounded-lg px-3" type="text" name="city" placeholder="Enter city or state" />
+          </div>
+          <div>
+            <label class="block mb-1" style="color:#9CA3AF;">Donation Amount</label>
+            <select class="w-full h-12 border-2 rounded-lg px-3" name="amount_range">
+              <option>Any Amount</option>
+              <option>₹500 - ₹5,000</option>
+              <option>₹5,000 - ₹25,000</option>
+              <option>₹25,000+</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn btn-accent btn-rounded"><i class="fa-solid fa-magnifying-glass"></i> Search NGOs</button>
+          </div>
+        </form>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-2" style="color:#E5E7EB;"><i class="fa-solid fa-chart-pie"></i> Donation Impact</h3>
+        <p class="mb-4" style="color:#9CA3AF;">Your donations have helped:</p>
+        <ul class="space-y-3" style="color:#E5E7EB;">
+          <li class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-solid fa-graduation-cap"></i> Provide education to 50+ children</span></li>
+          <li class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-solid fa-heart"></i> Support healthcare for 200+ families</span></li>
+          <li class="flex items-center justify-between border-b border-slate-700 pb-2"><span><i class="fa-solid fa-leaf"></i> Plant 500+ trees in communities</span></li>
+          <li class="flex items-center justify-between"><span><i class="fa-solid fa-house-chimney"></i> Build 3 homes for families in need</span></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="card">
-        <h3><i class="fas fa-history"></i> Donation History</h3>
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Organization</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Community Help Foundation</td>
-                        <td>$200</td>
-                        <td>Dec 15, 2024</td>
-                        <td>Poverty Alleviation</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Education First NGO</td>
-                        <td>$150</td>
-                        <td>Dec 10, 2024</td>
-                        <td>Education</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Green Earth Initiative</td>
-                        <td>$100</td>
-                        <td>Dec 5, 2024</td>
-                        <td>Environment</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="rounded-2xl p-0 overflow-hidden mb-8" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+      <div class="p-6 border-b border-slate-800"><h3 class="text-xl font-semibold" style="color:#E5E7EB;"><i class="fa-solid fa-rotate-left"></i> Donation History</h3></div>
+      <div class="p-0">
+        <table class="table" style="color:#E5E7EB;">
+          <thead><tr><th>Organization</th><th>Amount</th><th>Date</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for d in donations %}
+            <tr>
+              <td>{{ d.ngo.organization_name if d.ngo else d.ngo_id }}</td>
+              <td>₹{{ d.amount_inr or 0 }}</td>
+              <td>{{ (d.created_at.strftime('%b %d, %Y') if d.created_at else '') }}</td>
+              <td>{{ d.ngo.category if d.ngo and d.ngo.category else '-' }}</td>
+              <td><span class="badge {{ 'badge-success' if d.status=='confirmed' else ('badge-warning' if d.status in ['pending','pending_verification'] else 'badge-danger') }}">{{ d.status }}</span></td>
+              <td>
+                {% if d.status == 'confirmed' %}
+                  <a class="btn btn-secondary btn-rounded" href="{{ url_for('donor_certificate_view', donation_id=d.id) }}">Certificate</a>
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="muted">No donations</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-star"></i> Recommended NGOs</h3>
-            <div id="recommended-ngos">
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Community Help Foundation</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Poverty Alleviation • 4.9★ rating</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Helping families in need with food, shelter, and support.</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-heart"></i> Donate Now
-                    </button>
-                </div>
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Education First NGO</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Education • 4.8★ rating</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Providing quality education to underprivileged children.</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-heart"></i> Donate Now
-                    </button>
-                </div>
-                <div style="padding: 1rem;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Green Earth Initiative</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Environment • 4.7★ rating</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Working towards a sustainable and green future.</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-heart"></i> Donate Now
-                    </button>
-                </div>
-            </div>
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-4" style="color:#E5E7EB;"><i class="fa-regular fa-star"></i> Recommended NGOs</h3>
+        <div class="space-y-6">
+          {% for n in (recommended_ngos or all_ngos or [])[:3] %}
+          <div class="border-b border-slate-700 pb-4">
+            <div class="text-lg" style="color:#E5E7EB;">{{ n.organization_name }}</div>
+            <div class="text-sm" style="color:#9CA3AF;">{{ n.category or '—' }} • {{ '4.9★ rating' }}</div>
+            <div class="text-sm mt-1" style="color:#9CA3AF;">{{ (n.description or '')[:120] }}{% if (n.description or '')|length > 120 %}...{% endif %}</div>
+            <a class="btn btn-primary btn-rounded mt-3" href="{{ url_for('donation_checkout') }}?ngo={{ n.id }}"><i class="fa-solid fa-heart"></i> Donate Now</a>
+          </div>
+          {% else %}
+          <div class="text-sm" style="color:#9CA3AF;">No recommendations available.</div>
+          {% endfor %}
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-gift"></i> Quick Donation</h3>
-            <form>
-                <div class="form-group">
-                    <label for="donation_amount">Amount ($)</label>
-                    <input type="number" id="donation_amount" name="amount" min="1" step="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="donation_ngo">Select NGO</label>
-                    <select id="donation_ngo" name="ngo" required>
-                        <option value="">Choose an organization</option>
-                        <option value="community-help">Community Help Foundation</option>
-                        <option value="education-first">Education First NGO</option>
-                        <option value="green-earth">Green Earth Initiative</option>
-                        <option value="health-care">Health Care for All</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="donation_message">Message (Optional)</label>
-                    <textarea id="donation_message" name="message" rows="3" placeholder="Leave a message of support..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" name="anonymous" id="anonymous">
-                        Make this donation anonymous
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-credit-card"></i> Make Donation
-                </button>
-            </form>
-        </div>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+        <h3 class="text-xl font-semibold mb-4" style="color:#E5E7EB;"><i class="fa-regular fa-gift"></i> Quick Donation</h3>
+        <form action="{{ url_for('donation_checkout') }}" method="get" class="space-y-4">
+          <div>
+            <label for="qd_amount" class="block mb-1" style="color:#9CA3AF;">Amount (₹)</label>
+            <input id="qd_amount" name="amount" type="number" min="1" step="1" required />
+          </div>
+          <div>
+            <label for="qd_ngo" class="block mb-1" style="color:#9CA3AF;">Select NGO</label>
+            <select id="qd_ngo" name="ngo" required>
+              <option value="">Choose an organization</option>
+              {% for n in all_ngos or [] %}
+              <option value="{{ n.id }}">{{ n.organization_name }}{% if n.city or n.state %} — {{ n.city or '' }}{% if n.city and n.state %}, {% endif %}{{ n.state or '' }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="qd_message" class="block mb-1" style="color:#9CA3AF;">Message (Optional)</label>
+            <textarea id="qd_message" name="message" rows="3" placeholder="Leave a message of support..."></textarea>
+          </div>
+          <label style="display:flex; align-items:center; gap:.5rem; color:#9CA3AF;">
+            <input type="checkbox" name="anonymous" value="true"> Make this donation anonymous
+          </label>
+          <button type="submit" class="btn btn-accent btn-rounded" style="width:100%;"><i class="fa-solid fa-credit-card"></i> Make Donation</button>
+        </form>
+      </div>
     </div>
 
-    <div class="card">
-        <h3><i class="fas fa-certificate"></i> Your Certificates</h3>
-        <div class="grid grid-3">
-            <div style="text-align: center; padding: 1rem;">
-                <i class="fas fa-award" style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;"></i>
-                <h4>First Donor</h4>
-                <p style="color: #666;">Made your first donation</p>
-                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </div>
-            <div style="text-align: center; padding: 1rem;">
-                <i class="fas fa-medal" style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;"></i>
-                <h4>Generous Supporter</h4>
-                <p style="color: #666;">Donated over $1,000</p>
-                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </div>
-            <div style="text-align: center; padding: 1rem;">
-                <i class="fas fa-heart" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 1rem;"></i>
-                <h4>Community Champion</h4>
-                <p style="color: #666;">Supported 5+ organizations</p>
-                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </div>
+    <div class="rounded-2xl p-6" style="background:#0f172a; box-shadow:0 8px 30px rgba(2,6,23,.25);">
+      <h3 class="text-xl font-semibold mb-6" style="color:#E5E7EB;"><i class="fa-solid fa-certificate"></i> Your Certificates</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="text-center rounded-xl p-6" style="background:#0b1220; color:#E5E7EB;">
+          <div class="text-3xl mb-2">🌼</div>
+          <div class="font-semibold">First Donor</div>
+          <div class="text-sm mb-3" style="color:#9CA3AF;">Made your first donation</div>
+          <a class="btn btn-secondary btn-rounded" href="{{ url_for('donor_certificates') }}">Download</a>
         </div>
+        <div class="text-center rounded-xl p-6" style="background:#0b1220; color:#E5E7EB;">
+          <div class="text-3xl mb-2">🏅</div>
+          <div class="font-semibold">Generous Supporter</div>
+          <div class="text-sm mb-3" style="color:#9CA3AF;">Donated over ₹10,000</div>
+          <a class="btn btn-secondary btn-rounded" href="{{ url_for('donor_certificates') }}">Download</a>
+        </div>
+        <div class="text-center rounded-xl p-6" style="background:#0b1220; color:#E5E7EB;">
+          <div class="text-3xl mb-2">❤️</div>
+          <div class="font-semibold">Community Champion</div>
+          <div class="text-sm mb-3" style="color:#9CA3AF;">Supported 5+ organizations</div>
+          <a class="btn btn-secondary btn-rounded" href="{{ url_for('donor_certificates') }}">Download</a>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-
-<script>
-function searchNGOs() {
-    const category = document.getElementById('search_category').value;
-    const location = document.getElementById('search_location').value;
-    const amount = document.getElementById('search_amount').value;
-    
-    // This would typically make an API call to search for NGOs
-    console.log('Searching for NGOs:', { category, location, amount });
-    
-    // For demo purposes, show a message
-    alert('Search functionality would connect to the backend API to find matching NGOs based on your criteria.');
-}
-</script>
 {% endblock %}

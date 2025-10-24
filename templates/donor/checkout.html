@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Donate - NGO Connect{% endblock %}
+
+{% block content %}
+<section class="container py-4" style="max-width:720px;">
+  <div 
+    class="card card-elevated p-4"
+    id="donateMeta"
+    data-api="{{ url_for('api_donations_confirm') }}"
+    data-csrf="{{ csrf_token() }}"
+    data-ngo-id="{{ ngo.id if ngo else '' }}"
+    data-back="{{ url_for('donor_dashboard') }}"
+    data-upi-id="{{ upi_id }}"
+    data-upi-name="{{ upi_name }}"
+    data-amount="{{ amount or '' }}"
+    data-message="{{ message or '' }}"
+  >
+
+    <!-- Header -->
+    <h2 class="mb-3">Donate Securely via UPI</h2>
+    <p class="text-muted mb-4">
+      Your contribution helps NGOs continue their impactful work.
+    </p>
+
+    <form id="donate-form" onsubmit="return false;">
+      
+      <!-- NGO Name -->
+      <div class="form-group mb-3">
+        <label for="ngo_name">NGO</label>
+        <input 
+          type="text" 
+          id="ngo_name" 
+          value="{{ ngo.organization_name if ngo else '' }}" 
+          disabled
+        />
+      </div>
+
+      <!-- Amount -->
+      <div class="form-group mb-3">
+        <label for="amount_inr">Amount (INR)</label>
+        <input 
+          type="number" 
+          id="amount_inr" 
+          value="{{ amount or '' }}"
+          min="1" 
+          required
+        />
+      </div>
+
+      <!-- Message -->
+      <div class="form-group mb-3">
+        <label for="message">Message (optional)</label>
+        <input 
+          type="text" 
+          id="message" 
+          placeholder="Write a note for the NGO"
+          value="{{ message or '' }}"
+        />
+      </div>
+
+      <!-- Anonymous -->
+      <div class="form-group mb-4 d-flex align-items-center">
+        <input 
+          id="anonymous" 
+          type="checkbox"
+          class="me-2"
+          {% if anonymous %}checked{% endif %}
+        />
+        <label for="anonymous" class="mb-0">Donate anonymously</label>
+      </div>
+
+      <!-- UPI Section -->
+      <div class="card p-3 mb-4">
+        <h4 class="mb-2">UPI Details</h4>
+        <p class="text-muted mb-3">
+          Transfer to <strong>{{ upi_name }}</strong> ({{ upi_id }}).
+          Paste the UPI reference ID you receive after payment.
+        </p>
+        
+        <div class="form-group mb-2">
+          <label for="upi_reference">UPI Reference</label>
+          <input 
+            type="text" 
+            id="upi_reference" 
+            placeholder="e.g. 12AB34CD5678"
+          />
+        </div>
+      </div>
+
+      <!-- Scan Section -->
+      <div class="card p-3 mb-4">
+        <h4 class="mb-2">Scan to Pay</h4>
+        <p class="text-muted mb-3">
+          Scan this QR using any UPI app or tap the button to open UPI directly.
+        </p>
+
+        <div class="d-flex flex-wrap align-items-start gap-3">
+          <img 
+            id="upiQrImg" 
+            alt="UPI QR Code" 
+            style="width:220px; height:220px; border-radius:12px; background:#fff;"
+          />
+
+          <div class="d-flex flex-column gap-2">
+            <a 
+              id="upiLink"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-primary btn-rounded"
+            >
+              Pay in UPI App
+            </a>
+
+            <small class="text-muted">
+              If the amount isn’t auto-filled,
+              enter the amount you specified above.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="d-flex gap-3">
+        <button 
+          id="donateConfirm" 
+          class="btn btn-primary btn-rounded"
+        >
+          Confirm Donation
+        </button>
+
+        <a 
+          class="btn btn-secondary btn-rounded" 
+          href="{{ url_for('donor_dashboard') }}"
+        >
+          Back
+        </a>
+      </div>
+
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/donor_checkout.js') }}" defer></script>
+{% endblock %}

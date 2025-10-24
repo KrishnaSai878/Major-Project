@@ -1,37 +1,104 @@
 {% extends "base.html" %}
-
 {% block title %}About - NGO Connect{% endblock %}
-
 {% block content %}
-<div class="container">
-  <div class="dashboard-header">
-    <h1><i class="fas fa-info-circle"></i> About NGO Connect</h1>
-    <p>Connecting NGOs, volunteers, and donors to maximize social impact.</p>
-  </div>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-24 pb-20">
+  <div class="container mx-auto px-6 lg:px-12">
 
-  <div class="card">
-    <h3>Our Mission</h3>
-    <p>
-      NGO Connect is a national platform that brings together organizations, volunteers, and donors.
-      We help NGOs showcase opportunities, volunteers find and book 2-hour slots, and donors support
-      causes they care about. The platform offers skills-based matching, messaging, resources, projects,
-      leaderboards, analytics, and more.
-    </p>
-  </div>
+    <!-- Header -->
+    <div class="text-center mb-20">
+      <h1 class="text-5xl font-bold text-[#1F2B5B] mb-4">About NGO Hub</h1>
+      <p class="text-gray-600 text-lg max-w-3xl mx-auto">
+        Empowering communities by connecting compassionate volunteers with impactful NGOs to create lasting global change.
+      </p>
+      <div class="mt-6 w-20 h-1 bg-gradient-to-r from-[#FF0090] to-purple-500 mx-auto rounded-full"></div>
+    </div>
 
-  <div class="grid grid-3">
-    <div class="card">
-      <h3><i class="fas fa-people-carry"></i> For Volunteers</h3>
-      <p>Discover relevant opportunities, book convenient time slots, and track your impact.</p>
+    <!-- Mission & Vision -->
+    <div class="grid md:grid-cols-2 gap-10 mb-20">
+      <div class="group border-0 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl bg-white p-10">
+        <div class="w-16 h-16 bg-gradient-to-br from-[#FF0090] to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+          <i class="fa-solid fa-bullseye text-white text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-[#1F2B5B] mb-3">Our Mission</h3>
+        <p class="text-gray-600 leading-relaxed">
+          To eliminate social barriers by bridging NGOs with dedicated volunteers and generous donors, fostering sustainable, long-term community growth.
+        </p>
+      </div>
+
+      <div class="group border-0 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl bg-white p-10">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+          <i class="fa-solid fa-heart text-white text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-[#1F2B5B] mb-3">Our Vision</h3>
+        <p class="text-gray-600 leading-relaxed">
+          To build a world where every individual can contribute to social good, and every NGO has the support needed to make meaningful, lasting impact.
+        </p>
+      </div>
     </div>
-    <div class="card">
-      <h3><i class="fas fa-hand-holding-heart"></i> For NGOs</h3>
-      <p>Create events with time slots, manage bookings, share resources, and track projects.</p>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 text-center">
+      {% set stats = [
+        {'value': '500+', 'label': 'Active NGOs'},
+        {'value': '10K+', 'label': 'Volunteers'},
+        {'value': '1,200+', 'label': 'Projects Completed'},
+        {'value': '50K+', 'label': 'Lives Impacted'}
+      ] %}
+      {% for stat in stats %}
+      <div class="border-0 shadow-lg rounded-xl bg-white hover:shadow-2xl transition p-8">
+        <div class="text-4xl font-bold text-[#FF0090] mb-2">{{ stat.value }}</div>
+        <div class="text-gray-600 text-lg">{{ stat.label }}</div>
+      </div>
+      {% endfor %}
     </div>
-    <div class="card">
-      <h3><i class="fas fa-donate"></i> For Donors</h3>
-      <p>Find verified NGOs, follow progress, and support initiatives that align with your values.</p>
+
+    <!-- Journey Timeline -->
+    <div class="mb-20">
+      <h2 class="text-3xl font-bold text-center text-[#1F2B5B] mb-14">Our Journey</h2>
+      <div class="max-w-4xl mx-auto space-y-10">
+        {% set timeline = [
+          {'year': '2020', 'title': 'Foundation', 'desc': 'NGO Hub was founded with a mission to bridge communities and causes.'},
+          {'year': '2021', 'title': 'Growth', 'desc': 'Reached 100 NGOs and 1,000 volunteers committed to positive change.'},
+          {'year': '2023', 'title': 'Expansion', 'desc': 'Expanded to 10 cities with 5,000+ active volunteers and growing partnerships.'},
+          {'year': '2025', 'title': 'Impact', 'desc': 'Serving 500+ NGOs and creating measurable social impact worldwide.'}
+        ] %}
+        {% for item in timeline %}
+        <div class="flex gap-6 items-start">
+          <div class="w-20 h-20 bg-gradient-to-br from-[#FF0090] to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-semibold flex-shrink-0 shadow-lg">
+            {{ item.year }}
+          </div>
+          <div class="pt-2">
+            <h3 class="text-xl font-semibold text-[#1F2B5B] mb-1">{{ item.title }}</h3>
+            <p class="text-gray-600 leading-relaxed">{{ item.desc }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
+
+    <!-- Values -->
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-center text-[#1F2B5B] mb-14">Our Core Values</h2>
+      <div class="grid md:grid-cols-3 gap-10">
+        {% set values = [
+          {'icon': 'fa-users', 'title': 'Community First', 'desc': 'We believe in the power of unity and collaboration to uplift society.'},
+          {'icon': 'fa-award', 'title': 'Excellence', 'desc': 'We uphold integrity and strive for excellence in all our initiatives.'},
+          {'icon': 'fa-heart', 'title': 'Compassion', 'desc': 'Empathy drives our actions and strengthens our collective purpose.'}
+        ] %}
+        {% for v in values %}
+        <div class="border-0 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl bg-white text-center p-10">
+          <div class="flex justify-center mb-5">
+            <div class="w-16 h-16 bg-gradient-to-br from-[#1F2B5B] to-blue-600 rounded-2xl flex items-center justify-center">
+              <i class="fa-solid {{ v.icon }} text-white text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-xl font-semibold text-[#1F2B5B] mb-2">{{ v.title }}</h3>
+          <p class="text-gray-600 leading-relaxed">{{ v.desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}

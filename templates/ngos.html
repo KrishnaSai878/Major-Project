@@ -1,72 +1,147 @@
 {% extends "base.html" %}
-
-{% block title %}NGOs - Find Organizations{% endblock %}
-
+{% block title %}NGOs - NGO Connect{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="dashboard-header">
-    <h1><i class="fas fa-building"></i> Explore NGOs</h1>
-    <p>Browse verified organizations and find opportunities to contribute</p>
-  </div>
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl lg:text-5xl text-[#1F2B5B] font-bold mb-4">
+        Explore NGOs
+      </h1>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+        Browse verified organizations and discover opportunities to contribute
+      </p>
+    </div>
 
-  <div class="card">
-    <h3><i class="fas fa-search"></i> Search NGOs</h3>
-    <form method="get" class="grid grid-3">
-      <div class="form-group">
-        <label for="q">Name or Keywords</label>
-        <input type="text" id="q" name="q" value="{{ q }}" placeholder="e.g., education, health, environment">
+    <!-- Filter Form -->
+    <form method="GET" class="mb-10 shadow-lg rounded-2xl bg-white border border-gray-100">
+      <div class="p-6 grid md:grid-cols-4 gap-4">
+        <div class="md:col-span-2 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input
+            class="pl-10 h-12 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF0090] focus:border-[#FF0090] transition-all duration-200"
+            type="text"
+            id="q"
+            name="q"
+            value="{{ q or '' }}"
+            placeholder="Search NGOs..."
+          />
+        </div>
+        <div>
+          <select
+            class="h-12 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF0090] focus:border-[#FF0090]"
+            id="category"
+            name="category"
+          >
+            <option value="">All Categories</option>
+            {% for cat in [
+              'Education', 'Healthcare', 'Environment', 'Community Service',
+              'Animal Welfare', 'Disaster Relief', 'Arts & Culture',
+              'Sports', 'Technology'
+            ] %}
+              <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <input
+            class="h-12 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF0090] focus:border-[#FF0090]"
+            type="text"
+            id="city"
+            name="city"
+            value="{{ city or '' }}"
+            placeholder="City"
+          />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="category">Category</label>
-        <select id="category" name="category">
-          <option value="">All</option>
-          <option value="Education" {{ 'selected' if category=='Education' }}>Education</option>
-          <option value="Healthcare" {{ 'selected' if category=='Healthcare' }}>Healthcare</option>
-          <option value="Environment" {{ 'selected' if category=='Environment' }}>Environment</option>
-          <option value="Community Service" {{ 'selected' if category=='Community Service' }}>Community Service</option>
-          <option value="Animal Welfare" {{ 'selected' if category=='Animal Welfare' }}>Animal Welfare</option>
-          <option value="Disaster Relief" {{ 'selected' if category=='Disaster Relief' }}>Disaster Relief</option>
-          <option value="Arts & Culture" {{ 'selected' if category=='Arts & Culture' }}>Arts & Culture</option>
-          <option value="Sports" {{ 'selected' if category=='Sports' }}>Sports</option>
-          <option value="Technology" {{ 'selected' if category=='Technology' }}>Technology</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="city">City</label>
-        <input type="text" id="city" name="city" value="{{ city or '' }}" placeholder="e.g., Hyderabad, Mumbai">
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <button type="submit" class="btn btn-primary">Search</button>
+      <div class="px-6 pb-6 text-right">
+        <button
+          class="bg-[#FF0090] hover:bg-[#E0007D] text-white rounded-full px-8 py-2 shadow-md transition-all duration-300 hover:scale-105"
+          type="submit"
+        >
+          <i class="fa-solid fa-filter mr-2"></i>Filter
+        </button>
       </div>
     </form>
-  </div>
 
-  <div class="grid grid-3">
-    {% for org in ngos %}
-    <div class="card">
-      <h3>{{ org.organization_name }}</h3>
-      <p style="color:#666; margin-bottom: 0.75rem;">
-        {{ org.city or '' }}{% if org.city and org.state %}, {% endif %}{{ org.state or '' }}
-      </p>
-      {% if org.description %}
-      <p style="margin-bottom: 1rem;">{{ org.description[:140] }}{% if org.description|length > 140 %}...{% endif %}</p>
-      {% endif %}
-      <div>
-        <span class="badge badge-warning">{{ org.category or 'General' }}</span>
-        {% if org.is_verified %}
-        <span class="badge badge-success">Verified</span>
-        {% endif %}
-      </div>
-      <div style="margin-top:1rem;">
-        <a href="#" class="btn btn-primary">View Opportunities</a>
-      </div>
+    <!-- NGO Cards -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for ngo in ngos %}
+        <div
+          class="border-0 shadow-lg hover:shadow-2xl transition-transform duration-300 hover:-translate-y-2 rounded-xl bg-white"
+        >
+          <div class="relative h-48 overflow-hidden rounded-t-xl bg-gray-100">
+            {% if ngo.image_url %}
+              <img
+                src="{{ ngo.image_url }}"
+                alt="{{ ngo.organization_name }}"
+                class="object-cover w-full h-full"
+              />
+            {% else %}
+              <div class="flex items-center justify-center h-full text-gray-400 text-sm bg-gray-50">
+                <i class="fa-solid fa-hand-holding-heart text-3xl"></i>
+              </div>
+            {% endif %}
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between">
+              <h3 class="text-[#1F2B5B] text-xl font-semibold">
+                {{ ngo.organization_name }}
+              </h3>
+              {% if ngo.verified or ngo.is_verified %}
+                <span class="inline-flex items-center gap-1 text-green-600 text-sm font-medium">
+                  <i class="fa-solid fa-circle-check"></i> Verified
+                </span>
+              {% endif %}
+            </div>
+
+            {% if ngo.category %}
+              <span
+                class="inline-block bg-[#FF0090]/10 text-[#FF0090] text-xs font-medium px-3 py-1 rounded-full mt-2"
+              >
+                {{ ngo.category }}
+              </span>
+            {% endif %}
+
+            <div class="text-gray-500 text-sm mt-1">
+              {{ ngo.city or '' }}{% if ngo.city and ngo.state %}, {% endif %}{{ ngo.state or '' }}
+            </div>
+
+            {% if ngo.description %}
+              <p class="text-gray-600 mt-3">
+                {{ (ngo.description or '')[:140] }}{% if (ngo.description or '')|length > 140 %}...{% endif %}
+              </p>
+            {% endif %}
+
+            <div class="flex flex-wrap gap-2 mt-5">
+              <a
+                class="bg-[#FF0090]/10 text-[#FF0090] font-medium rounded-full px-4 py-2 hover:bg-[#FF0090]/20 transition-all duration-200"
+                href="{{ url_for('ngo_opportunities', ngo_id=ngo.id) }}"
+              >
+                <i class="fa-solid fa-briefcase mr-1"></i> View Opportunities
+              </a>
+
+              {% if ngo.website %}
+                <a
+                  class="bg-[#1F2B5B] text-white rounded-full px-4 py-2 hover:bg-[#142048] transition-all duration-200"
+                  href="{{ ngo.website }}"
+                  target="_blank"
+                >
+                  <i class="fa-solid fa-globe mr-1"></i> Visit Website
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="border-0 shadow rounded-xl bg-white p-10 text-center col-span-full">
+          <i class="fa-solid fa-face-frown text-4xl text-gray-400 mb-4"></i>
+          <p class="text-gray-600 text-lg">
+            No NGOs found. Try adjusting your filters or search term.
+          </p>
+        </div>
+      {% endfor %}
     </div>
-    {% else %}
-    <div class="card" style="grid-column: 1 / -1; text-align:center; color:#666;">
-      No organizations match your filters.
-    </div>
-    {% endfor %}
   </div>
 </div>
 {% endblock %}

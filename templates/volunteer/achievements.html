@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Your Achievements - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-[#1F2B5B] inline-flex items-center gap-3">
+        <i class="fas fa-trophy text-[#FF0090] animate-bounce"></i>
+        Your Achievements
+      </h1>
+      <p class="text-gray-600 mt-2 text-lg">Track your progress and celebrate your volunteer milestones</p>
+    </div>
+
+    <!-- Summary + Milestones -->
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+
+      <!-- Summary Card -->
+      <div class="rounded-2xl p-6 bg-white/90 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <h3 class="text-xl font-semibold mb-4 text-[#1F2B5B] flex items-center gap-2">
+          <i class="fas fa-star text-yellow-500"></i> Summary
+        </h3>
+        <div class="space-y-4 text-gray-700">
+          <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <span>Total Hours</span>
+            <span class="font-semibold text-[#1F2B5B]">{{ total_hours or 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <span>Total Points</span>
+            <span class="font-semibold text-[#1F2B5B]">{{ total_points or 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>Completed Bookings</span>
+            <span class="font-semibold text-[#1F2B5B]">{{ completed_bookings or 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Milestones Card -->
+      <div class="rounded-2xl p-6 bg-white/90 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <h3 class="text-xl font-semibold mb-4 text-[#1F2B5B] flex items-center gap-2">
+          <i class="fas fa-medal text-[#FF0090]"></i> Milestones
+        </h3>
+        <ul class="space-y-4 text-gray-700">
+          <li class="flex items-center justify-between border-b border-gray-200 pb-3">
+            <span class="inline-flex items-center gap-2"><i class="fas fa-check text-green-600"></i> First Volunteer</span>
+            <span class="text-sm font-medium {% if (total_hours or 0) > 0 %}text-green-600{% else %}text-gray-400{% endif %}">
+              {% if (total_hours or 0) > 0 %}Unlocked{% else %}Locked{% endif %}
+            </span>
+          </li>
+
+          <li class="flex flex-col">
+            <div class="flex items-center justify-between pb-2">
+              <span class="inline-flex items-center gap-2"><i class="fas fa-clock text-indigo-500"></i> 10 Hours</span>
+              <span class="text-sm font-medium {% if (total_hours or 0) >= 10 %}text-green-600{% else %}text-gray-400{% endif %}">
+                {% if (total_hours or 0) >= 10 %}Unlocked{% else %}Locked{% endif %}
+              </span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500"
+                   style="width: {{ ((total_hours or 0) / 10 * 100) if (total_hours or 0) < 10 else 100 }}%">
+              </div>
+            </div>
+          </li>
+
+          <li class="flex flex-col">
+            <div class="flex items-center justify-between pb-2">
+              <span class="inline-flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> 100 Points</span>
+              <span class="text-sm font-medium {% if (total_points or 0) >= 100 %}text-green-600{% else %}text-gray-400{% endif %}">
+                {% if (total_points or 0) >= 100 %}Unlocked{% else %}Locked{% endif %}
+              </span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div class="bg-yellow-500 h-2.5 rounded-full transition-all duration-500"
+                   style="width: {{ ((total_points or 0) / 100 * 100) if (total_points or 0) < 100 else 100 }}%">
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="rounded-2xl p-6 bg-white/90 shadow-lg hover:shadow-xl transition-all duration-300">
+      <h3 class="text-xl font-semibold mb-4 text-[#1F2B5B] flex items-center gap-2">
+        <i class="fas fa-list-check text-[#FF0090]"></i> Recent Bookings
+      </h3>
+      <div class="space-y-3">
+        {% for b in (recent_bookings or []) %}
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3 hover:bg-gray-50 rounded-lg px-2 transition">
+          <div>
+            <div class="text-[#1F2B5B] font-medium">{{ b.event_title or b.title }}</div>
+            <div class="text-sm text-gray-500">{{ b.when or b.start_at or '' }} • {{ b.location or '-' }}</div>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold capitalize
+            {% if b.status in ['confirmed','booked'] %}
+              bg-green-100 text-green-700
+            {% elif b.status in ['pending'] %}
+              bg-yellow-100 text-yellow-700
+            {% else %}
+              bg-red-100 text-red-700
+            {% endif %}">
+            {{ b.status or 'pending' }}
+          </span>
+        </div>
+        {% else %}
+        <div class="text-gray-500 text-center py-6">No recent bookings found.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Back / Dashboard Links -->
+    <div class="mt-10 flex flex-wrap gap-4 justify-center">
+      <a class="inline-flex items-center gap-2 bg-gray-100 text-[#1F2B5B] hover:bg-gray-200 font-medium px-5 py-2 rounded-full transition"
+         href="{{ url_for('dashboard') }}">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+      </a>
+      <a class="inline-flex items-center gap-2 bg-[#1F2B5B] text-white hover:bg-[#2d3a75] font-medium px-5 py-2 rounded-full transition"
+         href="{{ url_for('volunteers_leaderboard') }}">
+        <i class="fa-solid fa-trophy"></i> View Leaderboard
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

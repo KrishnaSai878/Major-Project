@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin - Events{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-slate-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+    <div class="border-0 shadow-lg rounded-xl bg-white p-6 mb-8">
+      <h1 class="text-3xl text-[#1F2B5B]">Events Management</h1>
+      <p class="text-gray-600">Browse and manage platform events.</p>
+    </div>
+
+    <div class="border-0 shadow-lg rounded-xl bg-white overflow-hidden">
+      <div class="p-6 flex items-center justify-between gap-4 border-b">
+        <h3 class="text-xl text-[#1F2B5B]">Events</h3>
+        <form method="GET" class="flex items-center gap-2 flex-wrap">
+          <input class="h-10 border-2 rounded-lg px-3" type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search events" />
+          <select class="h-10 border-2 rounded-lg px-3" name="status">
+            <option value="">All status</option>
+            {% for s in ['active','draft'] %}
+              <option value="{{ s }}" {% if request.args.get('status')==s %}selected{% endif %}>{{ s|capitalize }}</option>
+            {% endfor %}
+          </select>
+          <select class="h-10 border-2 rounded-lg px-3" name="ngo_id">
+            <option value="">All NGOs</option>
+            {% for n in ngos or [] %}
+              <option value="{{ n.id }}" {% if request.args.get('ngo_id') and request.args.get('ngo_id')|int==n.id %}selected{% endif %}>{{ n.organization_name }}</option>
+            {% endfor %}
+          </select>
+          <button class="bg-[#1F2B5B] text-white rounded-full px-4 py-2" type="submit">Filter</button>
+        </form>
+      </div>
+      <div class="p-0">
+        <table class="table">
+          <thead><tr><th>Title</th><th>NGO</th><th>Created</th><th>Start</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for e in events or [] %}
+            <tr>
+              <td>{{ e.title }}</td>
+              <td>{{ e.ngo_id }}</td>
+              <td>{{ (e.created_at.strftime('%Y-%m-%d') if e.created_at else '') }}</td>
+              <td>{{ (e.start_date.strftime('%Y-%m-%d') if e.start_date else '') }}</td>
+              <td><span class="badge {{ 'badge-success' if e.is_active else 'badge-warning' }}">{{ 'Active' if e.is_active else 'Draft' }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="muted">No events found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

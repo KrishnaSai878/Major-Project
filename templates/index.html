@@ -1,112 +1,100 @@
 {% extends "base.html" %}
 
-{% block title %}NGO Connect - Connecting NGOs, Volunteers, and Donors{% endblock %}
+{% block title %}NGO Connect – Empowering Change Together{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <div class="container">
-        <h1>Connect, Serve, Impact</h1>
-        <p>Join the national NGO Connect platform where NGOs, volunteers, and donors come together to create positive change in communities.</p>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="{{ url_for('register') }}" class="btn btn-primary">
-                <i class="fas fa-user-plus"></i> Get Started
-            </a>
-            <a href="#features" class="btn btn-secondary">
-                <i class="fas fa-info-circle"></i> Learn More
-            </a>
-        </div>
+
+<!-- 🌟 HERO SECTION -->
+<section class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-hidden pt-24">
+  <!-- Background Glow Effects -->
+  <div class="absolute top-0 right-0 w-[700px] h-[700px] rounded-full" style="background: radial-gradient(circle at top right, #A855F7 0%, #3B82F6 40%, transparent 70%); filter: blur(100px); opacity: .4;"></div>
+  <div class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle at bottom left, #FF0090 0%, #F472B6 40%, transparent 70%); filter: blur(120px); opacity: .3;"></div>
+
+  <div class="container mx-auto px-6 relative z-10 text-center max-w-3xl">
+    <p class="text-[#FF0090] uppercase tracking-widest font-medium mb-3 animate-fade-in">Building Compassion Together</p>
+    <h1 class="text-5xl md:text-6xl font-bold text-[#1F2B5B] leading-tight mb-6">
+      Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF0090] via-[#A855F7] to-[#3B82F6]">NGO Connect</span>
+    </h1>
+    <p class="text-gray-600 text-lg mb-8">
+      Empowering NGOs, volunteers, and donors to collaborate seamlessly and create a lasting impact in society.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="{{ url_for('ngos_directory') }}" class="bg-[#FF0090] hover:bg-[#E0007D] text-white px-8 py-3 rounded-full text-lg font-medium shadow-md hover:shadow-lg transition-all">Explore NGOs</a>
+      <a href="{{ url_for('register') }}" class="border border-[#A855F7] text-[#A855F7] hover:bg-[#A855F7] hover:text-white px-8 py-3 rounded-full text-lg font-medium transition-all">Join Us</a>
     </div>
+  </div>
 </section>
 
-<div class="container">
-    <section id="features" style="margin: 4rem 0;">
-        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">Platform Features</h2>
-        
-        <div class="grid grid-3">
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-building" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>NGO Management</h3>
-                <p>Create and manage your NGO profile, list events, and track volunteer engagement with comprehensive tools.</p>
-            </div>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-users" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>Volunteer Matching</h3>
-                <p>Smart skills-based matching system connects volunteers with opportunities that match their interests and expertise.</p>
-            </div>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-clock" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>2-Hour Slot Booking</h3>
-                <p>Flexible 2-hour time slot system allows volunteers to contribute based on their availability and schedule.</p>
-            </div>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-hand-holding-heart" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>Donor Support</h3>
-                <p>Connect with donors and manage donations to support your organization's mission and projects.</p>
-            </div>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-comments" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>Communication Tools</h3>
-                <p>Built-in messaging system enables seamless communication between NGOs, volunteers, and donors.</p>
-            </div>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 1rem;">
-                    <i class="fas fa-chart-line" style="font-size: 3rem; color: #667eea;"></i>
-                </div>
-                <h3>Analytics & Reporting</h3>
-                <p>Comprehensive analytics and reporting tools to track impact, volunteer hours, and organizational growth.</p>
-            </div>
-        </div>
-    </section>
 
-    <section style="margin: 4rem 0;">
-        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem; color: #333;">How It Works</h2>
-        
-        <div class="grid grid-2">
-            <div class="card">
-                <h3><i class="fas fa-1" style="color: #667eea;"></i> Register & Create Profile</h3>
-                <p>Sign up as an NGO, volunteer, or donor. Create detailed profiles with your skills, interests, and organizational information.</p>
-            </div>
-            
-            <div class="card">
-                <h3><i class="fas fa-2" style="color: #667eea;"></i> Browse Opportunities</h3>
-                <p>NGOs can list events and opportunities. Volunteers can browse and filter based on location, skills, and time availability.</p>
-            </div>
-            
-            <div class="card">
-                <h3><i class="fas fa-3" style="color: #667eea;"></i> Book Time Slots</h3>
-                <p>Volunteers can book 2-hour time slots for events that match their skills and interests. Real-time availability tracking.</p>
-            </div>
-            
-            <div class="card">
-                <h3><i class="fas fa-4" style="color: #667eea;"></i> Track Impact</h3>
-                <p>Monitor volunteer hours, points earned, and project progress. Generate reports and analytics for continuous improvement.</p>
-            </div>
-        </div>
-    </section>
+<!-- 💼 SERVICES SECTION -->
+<section class="relative py-24 bg-gradient-to-br from-white via-purple-50 to-pink-50 overflow-hidden">
+  <!-- Subtle Glow Backgrounds -->
+  <div class="absolute top-10 left-10 w-[300px] h-[300px] rounded-full" style="background: radial-gradient(circle, #A855F7, transparent 70%); filter: blur(80px); opacity: .25;"></div>
+  <div class="absolute bottom-10 right-10 w-[300px] h-[300px] rounded-full" style="background: radial-gradient(circle, #FF0090, transparent 70%); filter: blur(100px); opacity: .2;"></div>
 
-    <section style="margin: 4rem 0; text-align: center;">
-        <div class="card">
-            <h2 style="margin-bottom: 1rem; color: #333;">Ready to Make a Difference?</h2>
-            <p style="margin-bottom: 2rem; font-size: 1.1rem;">Join thousands of NGOs, volunteers, and donors who are already creating positive change in communities.</p>
-            <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
-                <i class="fas fa-rocket"></i> Start Your Journey
-            </a>
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <p class="text-[#FF0090] uppercase tracking-wider font-medium mb-3">What We Offer</p>
+      <h2 class="text-4xl md:text-5xl font-semibold text-[#1F2B5B]">Our Core Services</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Discover how NGO Connect bridges the gap between passion, purpose, and people through these impactful services.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+      <!-- Service Card -->
+      {% for service in [
+        {'icon': 'fa-hand-holding-heart', 'color': 'from-orange-500 to-orange-600', 'title': 'Donations', 'desc': 'Connect donors with trusted NGOs to fund impactful projects.'},
+        {'icon': 'fa-diagram-project', 'color': 'from-[#1F2B5B] to-[#2D3B6F]', 'title': 'Projects', 'desc': 'Collaborate on ongoing initiatives and measure real-world impact.'},
+        {'icon': 'fa-calendar-days', 'color': 'from-yellow-500 to-yellow-600', 'title': 'Events', 'desc': 'Join community events and volunteer programs seamlessly.'},
+        {'icon': 'fa-sliders', 'color': 'from-red-400 to-red-500', 'title': 'Customization', 'desc': 'Tailor your NGO profile and manage services effortlessly.'}
+      ] %}
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 p-8 text-center space-y-4">
+        <div class="flex justify-center">
+          <div class="bg-gradient-to-br {{ service.color }} w-16 h-16 rounded-2xl flex items-center justify-center shadow-md">
+            <i class="fa-solid {{ service.icon }} text-white text-2xl"></i>
+          </div>
         </div>
-    </section>
-</div>
+        <h3 class="text-[#1F2B5B] text-xl font-semibold">{{ service.title }}</h3>
+        <p class="text-gray-500">{{ service.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- 🚀 OUR JOURNEY TIMELINE -->
+<section class="relative py-24 bg-gradient-to-br from-purple-50 via-white to-blue-50">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-[#FF0090] uppercase tracking-wider font-medium mb-3">Our Journey</p>
+      <h2 class="text-4xl md:text-5xl font-semibold text-[#1F2B5B]">Milestones of Progress</h2>
+      <p class="text-gray-500 mt-4 max-w-2xl mx-auto">A brief look at how NGO Connect evolved to empower communities and make giving easier for everyone.</p>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto">
+      <div class="absolute left-1/2 top-0 h-full w-1 bg-gradient-to-b from-[#A855F7] to-[#3B82F6] transform -translate-x-1/2"></div>
+
+      {% set timeline = [
+        {'side': 'left', 'title': 'Platform Launch', 'date': 'January 2023', 'desc': 'Launched NGO Connect with NGO registration and volunteer matching features.'},
+        {'side': 'right', 'title': 'Event Management', 'date': 'May 2023', 'desc': 'Introduced an event creation and 2-hour time-slot system for volunteers.'},
+        {'side': 'left', 'title': 'Donor Integration', 'date': 'September 2023', 'desc': 'Enabled donor profiles and donation tracking for sustainability.'},
+        {'side': 'right', 'title': 'Analytics & Achievements', 'date': 'December 2023', 'desc': 'Added impact analytics, leaderboards, and volunteer achievements.'},
+        {'side': 'left', 'title': 'Mobile App & API', 'date': 'Coming Soon', 'desc': 'Next phase: cross-platform mobile app and open API integrations.'}
+      ] %}
+      
+      {% for event in timeline %}
+      <div class="flex {{ 'justify-start' if event.side == 'left' else 'justify-end' }} mb-12">
+        <div class="relative w-1/2 {{ 'pr-8 text-right' if event.side == 'left' else 'pl-8 text-left' }}">
+          <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+            <h3 class="font-semibold text-lg text-[#1F2B5B]">{{ event.title }}</h3>
+            <p class="text-sm text-gray-400 mb-2">{{ event.date }}</p>
+            <p class="text-gray-600">{{ event.desc }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 {% endblock %}

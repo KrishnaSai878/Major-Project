@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Server Error - NGO Connect{% endblock %}
+{% block content %}
+<section class="hero" style="padding:3rem 0;">
+  <div class="container">
+    <h1 style="font-weight:800;">Something went wrong</h1>
+    <p class="muted">An unexpected error occurred. Please try again later.</p>
+    <div style="margin-top:1rem;">
+      <a class="btn btn-primary btn-rounded" href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Admin Donations - NGO Connect{% endblock %}
+{% block content %}
+<section class="container">
+  <h1 class="section-heading" style="margin-top:0;">Donations</h1>
+  <form method="GET" class="card" style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
+    <div class="form-group">
+      <label>Status</label>
+      <select name="status">
+        <option value="" {% if not selected_status %}selected{% endif %}>All</option>
+        {% for s in ['pending','pending_verification','confirmed','failed'] %}
+          <option value="{{ s }}" {% if selected_status==s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>NGO</label>
+      <select name="ngo_id">
+        <option value="">All</option>
+        {% for n in ngos %}
+          <option value="{{ n.id }}" {% if selected_ngo_id==n.id %}selected{% endif %}>{{ n.organization_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button class="btn btn-primary btn-rounded" type="submit">Filter</button>
+    <a class="btn btn-secondary btn-rounded" href="?export=csv">Export CSV</a>
+  </form>
+  <div class="card" style="margin-top:1rem;">
+    <table class="table">
+      <thead><tr><th>ID</th><th>Donor</th><th>NGO</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for d in donations %}
+          <tr>
+            <td>{{ d.id }}</td>
+            <td>{{ d.donor_id or 'Anon' }}</td>
+            <td>{{ d.ngo_id }}</td>
+            <td>₹{{ d.amount_inr or 0 }}</td>
+            <td><span class="badge {{ 'badge-success' if d.status=='confirmed' else ('badge-warning' if d.status in ['pending','pending_verification'] else 'badge-danger') }}">{{ d.status }}</span></td>
+            <td>
+              <form method="POST" action="{{ url_for('admin_set_donation_status', donation_id=d.id) }}">
+                <select name="status">
+                  {% for s in ['pending','pending_verification','confirmed','failed'] %}
+                    <option value="{{ s }}" {% if d.status==s %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn btn-secondary btn-rounded" type="submit">Update</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="muted">No donations</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

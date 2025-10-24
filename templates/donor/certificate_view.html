@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Certificate - NGO Connect{% endblock %}
+{% block content %}
+<section class="container" style="max-width:800px;">
+  <div class="card card-elevated">
+    <h3 style="text-align:center;">Certificate of Appreciation</h3>
+    <p class="muted" style="text-align:center;">This is to certify that {% if donation.anonymous %}an Anonymous Donor{% else %}{{ donor.user.first_name }} {{ donor.user.last_name }}{% endif %} has donated</p>
+    <h1 style="text-align:center; margin: .5rem 0;">₹{{ donation.amount_inr or 0 }}</h1>
+    <p class="muted" style="text-align:center;">to {{ ngo.organization_name if ngo else 'the organization' }}. Thank you for your support!</p>
+    <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+      <div class="muted">Donation ID: {{ donation.id }}</div>
+      <div class="muted">Network: {{ donation.network|upper }}</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

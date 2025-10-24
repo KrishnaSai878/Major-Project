@@ -1,129 +1,90 @@
 {% extends "base.html" %}
-
 {% block title %}Admin Dashboard - NGO Connect{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="dashboard-header">
-        <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
-        <p>Platform overview and management</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-slate-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+    <div class="border-0 shadow-lg rounded-xl bg-white p-6 mb-8">
+      <h1 class="text-3xl text-[#1F2B5B]">Admin Dashboard</h1>
+      <p class="text-gray-600">Overview of platform activity and quick links.</p>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>{{ stats.total_users }}</h3>
-            <p>Total Users</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ stats.total_ngos }}</h3>
-            <p>Registered NGOs</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ stats.total_volunteers }}</h3>
-            <p>Active Volunteers</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ stats.total_events }}</h3>
-            <p>Total Events</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ stats.total_bookings }}</h3>
-            <p>Volunteer Bookings</p>
-        </div>
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ total_users or 0 }}</div>
+        <div class="text-gray-600">Users</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ total_ngos or 0 }}</div>
+        <div class="text-gray-600">NGOs</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">{{ total_events or 0 }}</div>
+        <div class="text-gray-600">Events</div>
+      </div>
+      <div class="border-0 shadow rounded-xl bg-white p-6 text-center">
+        <div class="text-3xl text-[#1F2B5B] mb-1">₹{{ '%.0f'|format(total_donations_inr or 0) }}</div>
+        <div class="text-gray-600">Donations (INR)</div>
+      </div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-users"></i> User Management</h3>
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
-                    <i class="fas fa-user-plus"></i> Add User
-                </a>
-                <a href="#" class="btn btn-secondary">
-                    <i class="fas fa-list"></i> View All Users
-                </a>
-            </div>
-            <p>Manage user accounts, roles, and permissions across the platform.</p>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="border-0 shadow-lg rounded-xl bg-white overflow-hidden">
+        <div class="p-6 border-b"><h3 class="text-xl text-[#1F2B5B]">Recent Users</h3></div>
+        <div class="p-0">
+          <table class="table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody>
+              {% for u in recent_users or [] %}
+                <tr>
+                  <td>{{ u.first_name }} {{ u.last_name }}</td>
+                  <td>{{ u.email }}</td>
+                  <td>{{ u.role }}</td>
+                  <td>{{ (u.created_at.strftime('%Y-%m-%d') if u.created_at else '') }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="4" class="muted">No recent users</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="card">
-            <h3><i class="fas fa-building"></i> NGO Verification</h3>
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
-                    <i class="fas fa-check"></i> Verify NGOs
-                </a>
-                <a href="#" class="btn btn-secondary">
-                    <i class="fas fa-eye"></i> Review Applications
-                </a>
-            </div>
-            <p>Review and verify NGO applications to ensure platform quality.</p>
+      <div class="border-0 shadow-lg rounded-xl bg-white overflow-hidden">
+        <div class="p-6 border-b"><h3 class="text-xl text-[#1F2B5B]">Recent Donations</h3></div>
+        <div class="p-0">
+          <table class="table">
+            <thead><tr><th>ID</th><th>NGO</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for d in recent_donations or [] %}
+                <tr>
+                  <td>{{ d.id }}</td>
+                  <td>{{ d.ngo_id }}</td>
+                  <td>₹{{ d.amount_inr or 0 }}</td>
+                  <td><span class="badge {{ 'badge-success' if d.status=='confirmed' else ('badge-warning' if d.status in ['pending','pending_verification'] else 'badge-danger') }}">{{ d.status }}</span></td>
+                </tr>
+              {% else %}
+                <tr><td colspan="4" class="muted">No recent donations</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-chart-bar"></i> Analytics & Reports</h3>
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
-                    <i class="fas fa-download"></i> Generate Reports
-                </a>
-                <a href="#" class="btn btn-secondary">
-                    <i class="fas fa-chart-line"></i> View Analytics
-                </a>
-            </div>
-            <p>Access comprehensive analytics and generate detailed reports.</p>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-cog"></i> Platform Settings</h3>
-            <div style="margin-bottom: 1rem;">
-                <a href="#" class="btn btn-primary" style="margin-right: 0.5rem;">
-                    <i class="fas fa-wrench"></i> System Settings
-                </a>
-                <a href="#" class="btn btn-secondary">
-                    <i class="fas fa-bell"></i> Notifications
-                </a>
-            </div>
-            <p>Configure platform settings, notifications, and system preferences.</p>
-        </div>
+      </div>
     </div>
 
-    <div class="card">
-        <h3><i class="fas fa-exclamation-triangle"></i> Recent Activity</h3>
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Action</th>
-                        <th>Details</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>NGO Registration</td>
-                        <td>Community Help Foundation</td>
-                        <td>2 hours ago</td>
-                        <td><span class="badge badge-warning">Pending</span></td>
-                    </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>Event Created</td>
-                        <td>Food Drive 2024</td>
-                        <td>4 hours ago</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>Mike Johnson</td>
-                        <td>Volunteer Booking</td>
-                        <td>Booked 2-hour slot</td>
-                        <td>6 hours ago</td>
-                        <td><span class="badge badge-success">Confirmed</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <a href="{{ url_for('admin_donations') }}" class="border rounded-xl p-6 shadow hover:shadow-md transition bg-white text-center">
+        <div class="text-[#1F2B5B] text-lg mb-1">Manage Donations</div>
+        <div class="text-gray-600 text-sm">Review and update donation statuses</div>
+      </a>
+      <a href="#" class="border rounded-xl p-6 shadow hover:shadow-md transition bg-white text-center">
+        <div class="text-[#1F2B5B] text-lg mb-1">User Management</div>
+        <div class="text-gray-600 text-sm">Assign roles, deactivate users</div>
+      </a>
+      <a href="#" class="border rounded-xl p-6 shadow hover:shadow-md transition bg-white text-center">
+        <div class="text-[#1F2B5B] text-lg mb-1">Events</div>
+        <div class="text-gray-600 text-sm">Oversee platform events</div>
+      </a>
     </div>
+  </div>
 </div>
 {% endblock %}

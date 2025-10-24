@@ -1,215 +1,206 @@
 {% extends "base.html" %}
-
 {% block title %}Volunteer Dashboard - NGO Connect{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="dashboard-header">
-        <h1><i class="fas fa-user"></i> Welcome, {{ current_user.first_name }}!</h1>
-        <p>Find opportunities and track your impact</p>
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 pt-24 pb-12">
+  <div class="container mx-auto px-6 space-y-8">
+
+    <!-- Welcome Header -->
+    <div class="rounded-2xl p-6 bg-gray-800 shadow-lg">
+      <h1 class="text-3xl font-bold text-gray-100">
+        Welcome, {{ volunteer.user.first_name if volunteer and volunteer.user else 'Volunteer' }}!
+      </h1>
+      <p class="mt-1 text-gray-400">Find opportunities and track your impact</p>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>{{ volunteer.total_hours }}</h3>
-            <p>Hours Volunteered</p>
+    <!-- Stats Cards -->
+    <div class="grid md:grid-cols-4 gap-6">
+      {% set stat_colors = ['bg-purple-500','bg-blue-500','bg-green-500','bg-yellow-500'] %}
+      {% set stat_titles = ['Hours Volunteered','Points Earned','Active Bookings','Events Completed'] %}
+      {% set stat_values = [stats.total_hours or 0, stats.total_points or 0, active_bookings or 0, completed_events or 0] %}
+      {% for i in range(4) %}
+      <div class="rounded-xl p-6 text-center bg-white shadow-lg transform transition hover:-translate-y-1 hover:shadow-2xl">
+        <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center {{ stat_colors[i] }} mb-4">
+          <i class="fa-solid fa-chart-simple text-white text-xl"></i>
         </div>
-        <div class="stat-card">
-            <h3>{{ volunteer.total_points }}</h3>
-            <p>Points Earned</p>
-        </div>
-        <div class="stat-card">
-            <h3>{{ bookings|length }}</h3>
-            <p>Active Bookings</p>
-        </div>
-        <div class="stat-card">
-            <h3>12</h3>
-            <p>Events Completed</p>
-        </div>
+        <div class="text-2xl font-semibold text-gray-900">{{ stat_values[i] }}</div>
+        <div class="mt-1 text-sm text-gray-500">{{ stat_titles[i] }}</div>
+      </div>
+      {% endfor %}
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-search"></i> Find Opportunities</h3>
-            <div class="form-group">
-                <label for="search_location">Location</label>
-                <input type="text" id="search_location" placeholder="Enter city or zip code">
-            </div>
-            <div class="form-group">
-                <label for="search_category">Category</label>
-                <select id="search_category">
-                    <option value="">All Categories</option>
-                    <option value="education">Education</option>
-                    <option value="healthcare">Healthcare</option>
-                    <option value="environment">Environment</option>
-                    <option value="poverty">Poverty Alleviation</option>
-                    <option value="human-rights">Human Rights</option>
-                    <option value="animal-welfare">Animal Welfare</option>
-                    <option value="community-development">Community Development</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="search_date">Date</label>
-                <input type="date" id="search_date">
-            </div>
-            <button class="btn btn-primary" onclick="searchOpportunities()">
-                <i class="fas fa-search"></i> Search
-            </button>
+    <!-- Search Opportunities -->
+    <div class="rounded-2xl p-6 bg-white shadow-lg">
+      <h3 class="text-xl font-semibold mb-4 text-gray-900 flex items-center gap-2">
+        <i class="fa-solid fa-magnifying-glass"></i> Find Opportunities
+      </h3>
+      <form class="grid md:grid-cols-3 gap-4" onsubmit="event.preventDefault(); searchOpportunities();">
+        <div class="md:col-span-3">
+          <label class="block mb-1 text-gray-600">Location</label>
+          <input id="search_location" class="w-full h-12 border border-gray-300 rounded-xl px-3 focus:outline-none focus:ring-2 focus:ring-purple-500" type="text" placeholder="Enter city or zip code" />
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-trophy"></i> Your Achievements</h3>
-            <div style="margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                    <i class="fas fa-medal" style="color: #ffd700; font-size: 1.5rem; margin-right: 1rem;"></i>
-                    <div>
-                        <strong>First Volunteer</strong>
-                        <p style="margin: 0; color: #666;">Completed your first event</p>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                    <i class="fas fa-star" style="color: #ffd700; font-size: 1.5rem; margin-right: 1rem;"></i>
-                    <div>
-                        <strong>10 Hours Milestone</strong>
-                        <p style="margin: 0; color: #666;">Reached 10 volunteer hours</p>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <i class="fas fa-heart" style="color: #ff6b6b; font-size: 1.5rem; margin-right: 1rem;"></i>
-                    <div>
-                        <strong>Community Hero</strong>
-                        <p style="margin: 0; color: #666;">Helped 5 different organizations</p>
-                    </div>
-                </div>
-            </div>
+        <div>
+          <label class="block mb-1 text-gray-600">Category</label>
+          <select id="search_category" class="w-full h-12 border border-gray-300 rounded-xl px-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <option value="">All Categories</option>
+            <option value="education">Education</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="environment">Environment</option>
+            <option value="poverty">Poverty Alleviation</option>
+            <option value="human-rights">Human Rights</option>
+            <option value="animal-welfare">Animal Welfare</option>
+            <option value="community-development">Community Development</option>
+          </select>
         </div>
+        <div>
+          <label class="block mb-1 text-gray-600">Date</label>
+          <input id="search_date" class="w-full h-12 border border-gray-300 rounded-xl px-3 focus:outline-none focus:ring-2 focus:ring-purple-500" type="date" />
+        </div>
+        <div class="flex items-end">
+          <button class="btn btn-accent btn-rounded w-full md:w-auto transition transform hover:-translate-y-0.5 hover:scale-105 bg-purple-500 text-white px-4 py-2 rounded-full">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+        </div>
+      </form>
     </div>
 
-    <div class="card">
-        <h3><i class="fas fa-calendar-check"></i> Your Bookings</h3>
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Event</th>
-                        <th>Organization</th>
-                        <th>Date & Time</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>{{ booking.event.title }}</td>
-                        <td>{{ booking.event.ngo.organization_name }}</td>
-                        <td>{{ booking.time_slot.start_time.strftime('%B %d, %Y at %I:%M %p') }}</td>
-                        <td>{{ booking.event.location }}</td>
-                        <td>
-                            {% if booking.status == 'confirmed' %}
-                                <span class="badge badge-success">Confirmed</span>
-                            {% elif booking.status == 'completed' %}
-                                <span class="badge badge-primary">Completed</span>
-                            {% else %}
-                                <span class="badge badge-warning">Pending</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            {% if booking.status == 'confirmed' %}
-                            <a href="#" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #666;">No bookings yet. Start by searching for opportunities!</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <!-- Bookings -->
+    <div class="rounded-2xl overflow-hidden bg-white shadow-lg">
+      <div class="p-6 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <i class="fa-regular fa-calendar-days"></i> Your Bookings
+        </h3>
+      </div>
+      <div class="p-0 overflow-x-auto">
+        <table class="min-w-full text-gray-900 divide-y divide-gray-200">
+          <thead class="bg-gray-50 text-gray-600">
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-medium">Event</th>
+              <th class="px-6 py-3 text-left text-sm font-medium">Organization</th>
+              <th class="px-6 py-3 text-left text-sm font-medium">Date & Time</th>
+              <th class="px-6 py-3 text-left text-sm font-medium">Location</th>
+              <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
+              <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookings-table" class="divide-y divide-gray-200">
+            {% for b in (bookings or recent_bookings or []) %}
+            <tr class="hover:bg-gray-100 transition">
+              <td class="px-6 py-3">{{ b.event_title or b.title }}</td>
+              <td class="px-6 py-3">{{ b.ngo_name or '-' }}</td>
+              <td class="px-6 py-3">{{ b.start_at or b.when or '' }}</td>
+              <td class="px-6 py-3">{{ b.location or '-' }}</td>
+              <td class="px-6 py-3">
+                <span class="badge {{ 'badge-success' if b.status in ['confirmed','booked'] else ('badge-warning' if b.status in ['pending'] else 'badge-danger') }}">
+                  {{ b.status or 'pending' }}
+                </span>
+              </td>
+              <td class="px-6 py-3">
+                <a class="btn btn-secondary btn-rounded transition hover:scale-105" href="{{ url_for('volunteer_event_detail', event_id=b.event_id or b.id) }}">View</a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-gray-400 py-4">No bookings yet. Start by searching for opportunities!</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="grid grid-2">
-        <div class="card">
-            <h3><i class="fas fa-clock"></i> Recommended Opportunities</h3>
-            <div id="recommended-opportunities">
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Food Drive 2024</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Community Help Foundation</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Tomorrow, 2:00 PM - 4:00 PM</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-bookmark"></i> Book Slot
-                    </button>
-                </div>
-                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Tutoring Session</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Education First NGO</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Saturday, 10:00 AM - 12:00 PM</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-bookmark"></i> Book Slot
-                    </button>
-                </div>
-                <div style="padding: 1rem;">
-                    <h4 style="margin: 0 0 0.5rem 0;">Community Cleanup</h4>
-                    <p style="margin: 0.25rem 0; color: #666;">Green Earth Initiative</p>
-                    <p style="margin: 0.25rem 0; color: #666;">Sunday, 9:00 AM - 11:00 AM</p>
-                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
-                        <i class="fas fa-bookmark"></i> Book Slot
-                    </button>
-                </div>
-            </div>
+    <!-- Recommended & Impact -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Recommended Opportunities -->
+      <div class="rounded-2xl p-6 bg-white shadow-lg space-y-4">
+        <h3 class="text-xl font-semibold mb-4 text-gray-900 flex items-center gap-2">
+          <i class="fa-regular fa-clock"></i> Recommended Opportunities
+        </h3>
+        <div id="recommended-opportunities" class="space-y-4">
+          {% for e in recommended_events %}
+          <div class="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition">
+            <div class="text-lg font-semibold text-gray-900">{{ e.title }}</div>
+            <div class="text-sm text-gray-500">{{ e.ngo_name or '—' }}</div>
+            <div class="text-sm text-gray-400">{{ e.when or '' }}</div>
+            <a class="btn btn-primary btn-rounded mt-3 w-full md:w-auto transition hover:scale-105 bg-purple-500 text-white px-4 py-2 rounded-full" href="{{ url_for('volunteer_event_detail', event_id=e.id) }}">
+              <i class="fa-regular fa-bookmark mr-2"></i> Book Slot
+            </a>
+          </div>
+          {% else %}
+          <div class="text-sm text-gray-400">No recommendations yet.</div>
+          {% endfor %}
         </div>
+      </div>
 
-        <div class="card">
-            <h3><i class="fas fa-chart-bar"></i> Your Impact</h3>
-            <div style="margin-bottom: 1rem;">
-                <p><strong>This Month:</strong></p>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-clock" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Hours volunteered: 8
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-star" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Points earned: 40
-                    </li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
-                        <i class="fas fa-building" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        Organizations helped: 3
-                    </li>
-                    <li style="padding: 0.5rem 0;">
-                        <i class="fas fa-users" style="color: #667eea; margin-right: 0.5rem;"></i>
-                        People impacted: 150+
-                    </li>
-                </ul>
-            </div>
-            <div style="text-align: center;">
-                <a href="#" class="btn btn-secondary">
-                    <i class="fas fa-download"></i> Download Certificate
-                </a>
-            </div>
+      <!-- Volunteer Impact -->
+      <div class="rounded-2xl p-6 bg-white shadow-lg space-y-3">
+        <h3 class="text-xl font-semibold mb-4 text-gray-900 flex items-center gap-2">
+          <i class="fa-solid fa-chart-line"></i> Your Impact
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <span><i class="fa-regular fa-clock mr-2"></i> Hours volunteered:</span>
+            <span class="text-gray-500">{{ stats.total_hours or 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <span><i class="fa-regular fa-star mr-2"></i> Points earned:</span>
+            <span class="text-gray-500">{{ stats.total_points or 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+            <span><i class="fa-regular fa-building mr-2"></i> Organizations helped:</span>
+            <span class="text-gray-500">{{ organizations_helped or 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span><i class="fa-solid fa-people-group mr-2"></i> People impacted:</span>
+            <span class="text-gray-500">{{ people_impacted or 0 }}</span>
+          </div>
         </div>
+        <a class="btn btn-secondary btn-rounded mt-6 w-full md:w-auto transition hover:scale-105 bg-purple-500 text-white px-4 py-2 rounded-full" href="{{ url_for('volunteer_achievements') }}">
+          <i class="fa-solid fa-trophy mr-2"></i> View Achievements
+        </a>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <script>
 function searchOpportunities() {
-    const location = document.getElementById('search_location').value;
-    const category = document.getElementById('search_category').value;
-    const date = document.getElementById('search_date').value;
-    
-    // This would typically make an API call to search for opportunities
-    console.log('Searching for opportunities:', { location, category, date });
-    
-    // For demo purposes, show a message
-    alert('Search functionality would connect to the backend API to find matching opportunities based on your criteria.');
+  const location = document.getElementById('search_location').value;
+  const category = document.getElementById('search_category').value;
+  const date = document.getElementById('search_date').value;
+
+  const params = new URLSearchParams();
+  if(location) params.append('location', location);
+  if(category) params.append('category', category);
+  if(date) params.append('start_date', date);
+
+  fetch(`/api/search/events?${params.toString()}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.error) { alert('Error: ' + data.error); return; }
+      displaySearchResults(data);
+    }).catch(err => { console.error(err); alert('Search failed.'); });
+}
+
+function displaySearchResults(events) {
+  const container = document.getElementById('recommended-opportunities');
+  if(!events || events.length === 0) {
+    container.innerHTML = '<div class="text-gray-500 text-sm">No opportunities found matching your criteria.</div>';
+    return;
+  }
+
+  let html = '';
+  events.forEach(e => {
+    html += `<div class="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition">
+      <div class="text-lg font-semibold text-gray-900">${e.title}</div>
+      <div class="text-sm text-gray-500">${e.ngo_name || '—'}</div>
+      <div class="text-sm text-gray-400">${e.category || ''} • ${new Date(e.start_date).toLocaleDateString()}</div>
+      <div class="text-sm text-gray-400">${e.location || ''}</div>
+      <a class="btn btn-primary btn-rounded mt-3 w-full md:w-auto transition hover:scale-105 bg-purple-500 text-white px-4 py-2 rounded-full" href="/volunteer/events/${e.id}"><i class="fa-regular fa-eye mr-2"></i> View Details</a>
+    </div>`;
+  });
+  container.innerHTML = html;
 }
 </script>
 {% endblock %}

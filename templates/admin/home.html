@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Admin Home - NGO Connect{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 pt-24 pb-12">
+  <div class="container mx-auto px-6 space-y-8">
+
+    <div class="rounded-2xl p-6 bg-white shadow">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-[#1F2B5B]">Admin Home</h1>
+          <p class="text-gray-600">Quick links and overview</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-rounded">Back to Site</a>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <a href="{{ url_for('admin_users') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-users"></i> Manage Users
+        </div>
+        <p class="text-gray-600 mt-2">View, edit, and moderate users</p>
+      </a>
+      <a href="{{ url_for('admin_ngos') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-hand-holding-heart"></i> Manage NGOs
+        </div>
+        <p class="text-gray-600 mt-2">Approve and manage organizations</p>
+      </a>
+      <a href="{{ url_for('admin_events') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-calendar-days"></i> Manage Events
+        </div>
+        <p class="text-gray-600 mt-2">Review and oversee events</p>
+      </a>
+      <a href="{{ url_for('admin_donations') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-rupee-sign"></i> Donations
+        </div>
+        <p class="text-gray-600 mt-2">Monitor and update donation statuses</p>
+      </a>
+      <a href="{{ url_for('admin_content') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square"></i> Content
+        </div>
+        <p class="text-gray-600 mt-2">Manage site content and pages</p>
+      </a>
+      <a href="{{ url_for('admin_roles') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-id-badge"></i> Roles & Permissions
+        </div>
+        <p class="text-gray-600 mt-2">Control access across the platform</p>
+      </a>
+      <a href="{{ url_for('admin_audit_logs') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-clipboard-list"></i> Audit Logs
+        </div>
+        <p class="text-gray-600 mt-2">View administrative activity</p>
+      </a>
+      <a href="{{ url_for('admin_profile') }}" class="rounded-2xl p-6 bg-white hover:bg-gray-50 shadow transition block">
+        <div class="text-[#1F2B5B] text-xl font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-user-shield"></i> My Profile
+        </div>
+        <p class="text-gray-600 mt-2">Update your admin profile</p>
+      </a>
+    </div>
+
+    <div class="rounded-2xl p-6 bg-white shadow">
+      <h3 class="text-xl font-semibold text-[#1F2B5B] mb-3">Your Permissions</h3>
+      <div class="flex flex-wrap gap-2">
+        {% for p in (admin_permissions or []) %}
+          <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">{{ p }}</span>
+        {% else %}
+          <span class="text-gray-500 text-sm">No permissions found.</span>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Volunteers Leaderboard - NGO Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 pt-24 pb-12">
+  <div class="container mx-auto px-6">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 mb-4">
+        <i class="fa-solid fa-trophy text-[#FF0090] text-2xl"></i>
+        <h1 class="text-4xl lg:text-5xl text-[#1F2B5B]">Volunteer Leaderboard</h1>
+      </div>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Celebrating our most dedicated volunteers making a difference</p>
+    </div>
+
+    <!-- Top 3 Podium -->
+    <div class="max-w-4xl mx-auto mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end mb-8">
+        <!-- 2nd Place -->
+        {% if top_three|length >= 2 %}
+        <div class="border-0 shadow-lg rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 text-center p-6">
+          <div class="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-medal text-white text-xl"></i>
+          </div>
+          <div class="w-20 h-20 mx-auto mb-3 border-4 border-gray-400 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-blue-500 text-white text-xl">
+            {{ top_three[1].avatar|default('?') }}
+          </div>
+          <h3 class="text-lg text-[#1F2B5B] mb-1">{{ top_three[1].name }}</h3>
+          <div class="text-2xl mb-1">{{ top_three[1].hours }} hrs</div>
+          <span class="inline-block bg-gray-300 text-gray-800 rounded-full px-3 py-1 text-sm">{{ top_three[1].points }} pts</span>
+        </div>
+        {% endif %}
+
+        <!-- 1st Place -->
+        {% if top_three|length >= 1 %}
+        <div class="border-0 shadow-xl rounded-xl bg-gradient-to-br from-yellow-200 to-yellow-300 text-center p-6 transform scale-110">
+          <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-trophy text-white text-2xl"></i>
+          </div>
+          <div class="w-24 h-24 mx-auto mb-3 border-4 border-yellow-500 rounded-full flex items-center justify-center bg-gradient-to-br from-[#FF0090] to-purple-500 text-white text-2xl">
+            {{ top_three[0].avatar|default('?') }}
+          </div>
+          <h3 class="text-xl text-[#1F2B5B] mb-1">{{ top_three[0].name }}</h3>
+          <div class="text-3xl mb-2">{{ top_three[0].hours }} hrs</div>
+          <span class="inline-block bg-yellow-600 text-white rounded-full px-3 py-1 text-sm">{{ top_three[0].points }} pts</span>
+        </div>
+        {% endif %}
+
+        <!-- 3rd Place -->
+        {% if top_three|length >= 3 %}
+        <div class="border-0 shadow-lg rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 text-center p-6">
+          <div class="w-16 h-16 bg-orange-400 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-award text-white text-xl"></i>
+          </div>
+          <div class="w-20 h-20 mx-auto mb-3 border-4 border-orange-400 rounded-full flex items-center justify-center bg-gradient-to-br from-orange-500 to-red-500 text-white text-xl">
+            {{ top_three[2].avatar|default('?') }}
+          </div>
+          <h3 class="text-lg text-[#1F2B5B] mb-1">{{ top_three[2].name }}</h3>
+          <div class="text-2xl mb-1">{{ top_three[2].hours }} hrs</div>
+          <span class="inline-block bg-gray-300 text-gray-800 rounded-full px-3 py-1 text-sm">{{ top_three[2].points }} pts</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Rest of Leaderboard -->
+    <div class="max-w-4xl mx-auto border-0 shadow-lg rounded-xl bg-white overflow-hidden">
+      <div class="p-6 space-y-3">
+        {% for volunteer in others %}
+        <div class="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50 transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+              #{{ volunteer.rank }}
+            </div>
+            <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 text-white">
+              {{ volunteer.avatar|default('?') }}
+            </div>
+            <div>
+              <div class="text-[#1F2B5B]">{{ volunteer.name }}</div>
+              <div class="text-sm text-gray-500 flex items-center gap-1">
+                <i class="fa-solid fa-clock"></i> {{ volunteer.hours }} volunteer hours
+              </div>
+            </div>
+          </div>
+          <span class="inline-block border rounded-full px-3 py-1 text-sm text-[#FF0090] border-[#FF0090]">{{ volunteer.points }} pts</span>
+        </div>
+        {% else %}
+        <div class="text-gray-500 p-4 text-center">No volunteers found.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

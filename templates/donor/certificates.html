@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Certificates - NGO Connect{% endblock %}
+{% block content %}
+<section class="container">
+  <h1 class="section-heading" style="margin-top:0;">Donation Certificates</h1>
+  <div class="grid grid-3">
+    {% for c in certificates %}
+      <div class="card">
+        <h3>Donation #{{ c.id }}</h3>
+        <p class="muted">Status: {{ c.status }}</p>
+        <div style="display:flex; gap:.5rem;">
+          <a class="btn btn-secondary btn-rounded" href="{{ url_for('donor_certificate_view', donation_id=c.id) }}">View</a>
+          <a class="btn btn-primary btn-rounded" href="{{ url_for('donor_certificate_view', donation_id=c.id) }}?download=1">Download</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="card" style="grid-column:1/-1;">
+        <p class="muted">No confirmed certificates yet.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

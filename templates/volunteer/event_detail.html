@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} - Volunteer Opportunity{% endblock %}
+
+{% block content %}
+<section class="container mx-auto px-4 py-8 max-w-5xl">
+  <!-- Event Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2"><i class="fas fa-hands-helping text-blue-600"></i> {{ event.title }}</h1>
+    <p class="text-gray-500">Hosted by {{ ngo.organization_name if ngo else 'NGO' }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Event Details Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md">
+      <h2 class="text-xl font-semibold mb-2">About this Opportunity</h2>
+      <p class="text-gray-700 dark:text-gray-300">{{ event.description }}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-gray-600">
+        <div>
+          <p class="flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+          <p class="flex items-center gap-2"><i class="fas fa-calendar"></i> 
+            {{ event.start_date.strftime('%b %d, %Y') }} - {{ event.end_date.strftime('%b %d, %Y') }}
+          </p>
+        </div>
+        <div>
+          <p class="flex items-center gap-2"><i class="fas fa-tag"></i> {{ event.category }}</p>
+          <p class="flex items-center gap-2"><i class="fas fa-users"></i> Max per slot: {{ event.max_volunteers }}</p>
+        </div>
+      </div>
+
+      {% if event.required_skills %}
+      <div class="mt-4">
+        <strong>Required Skills:</strong>
+        <div class="flex flex-wrap gap-2 mt-1">
+          {% for skill in event.get_required_skills() %}
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Time Slots Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md">
+      <h2 class="text-xl font-semibold mb-4"><i class="fas fa-clock text-yellow-500"></i> Available Time Slots</h2>
+
+      {% if time_slots %}
+      <div class="space-y-4">
+        {% for slot in time_slots %}
+        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-sm">
+          <div>
+            <p class="text-gray-600 dark:text-gray-300">{{ slot.start_time.strftime('%B %d, %Y %I:%M %p') }} - {{ slot.end_time.strftime('%I:%M %p') }}</p>
+            <p class="text-gray-500 text-sm">Spots left: {{ slot.max_volunteers - slot.current_volunteers }}</p>
+          </div>
+          <button class="btn btn-primary btn-rounded" onclick="bookSlot({{ event.id }}, {{ slot.id }})">Book</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8 text-gray-500 dark:text-gray-300">
+        <i class="fas fa-calendar-times text-3xl mb-2"></i>
+        <p>No available slots at the moment.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-6">
+    <a href="{{ url_for('ngo_opportunities', ngo_id=ngo.id) }}" class="btn btn-secondary btn-rounded">
+      <i class="fas fa-arrow-left"></i> Back to Opportunities
+    </a>
+  </div>
+</section>
+
+<!-- Booking Script -->
+<script>
+const IS_AUTH = {{ current_user.is_authenticated|tojson }};
+const IS_VOLUNTEER = {{ (current_user.is_authenticated and current_user.role == 'volunteer')|tojson }};
+const LOGIN_URL = {{ (url_for('login') + '?next=' + request.path)|tojson }};
+
+async function bookSlot(eventId, slotId) {
+    if (!IS_AUTH || !IS_VOLUNTEER) {
+        alert('Please login as a volunteer to book a slot.');
+        window.location.href = LOGIN_URL;
+        return;
+    }
+    try {
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+        const response = await fetch('/api/book-slot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ event_id: eventId, slot_id: slotId })
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            alert('Please login as a volunteer to book a slot.');
+            window.location.href = LOGIN_URL;
+            return;
+        }
+        const ct = response.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+            alert('Please login as a volunteer to book a slot.');
+            window.location.href = LOGIN_URL;
+            return;
+        }
+        const result = await response.json();
+        if (!response.ok) {
+            alert((result && result.error) || 'Failed to book the slot.');
+            return;
+        }
+        alert('Slot booked successfully!');
+        window.location.reload();
+    } catch (err) {
+        alert('Please login as a volunteer to book a slot.');
+        console.error(err);
+        window.location.href = LOGIN_URL;
+    }
+}
+</script>
+{% endblock %}

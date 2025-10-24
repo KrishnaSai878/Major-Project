@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="IjAwYWIzNTczMTk3YWUzZjcxYjIxNTk1NDRjOGFlNzg2Y2U0ZThjMWQi.aNS65Q.vzmVwWIwb1wYi_JA6daycm4yqno">
+    <title>Donor Dashboard - NGO Connect</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #6d28d9;
+            --brand-secondary: #f472b6;
+            --brand-amber: #f59e0b;
+            --ink-900: #0f172a;
+            --ink-700: #334155;
+            --surface: #ffffff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        /* Style last nav item as pill (e.g., Register) */
+        .nav-menu li:last-child a {
+            border: 2px solid rgba(255,255,255,0.85);
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            box-shadow: inset 0 -2px 0 rgba(255,255,255,0.15);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative gradient blobs like the reference UI */
+        .hero::before,
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .hero::before {
+            left: -180px;
+            top: -120px;
+            background: radial-gradient(closest-side, #a78bfa, transparent);
+        }
+        .hero::after {
+            right: -200px;
+            bottom: -180px;
+            background: radial-gradient(closest-side, #f472b6, transparent);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #fbbf24, #f59e0b);
+            color: #1f2937;
+            box-shadow: 0 12px 28px rgba(245, 158, 11, 0.45), inset 0 -2px 0 rgba(0,0,0,0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px rgba(245, 158, 11, 0.55), inset 0 -3px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-rounded { border-radius: 9999px; }
+        .btn-accent {
+            background: linear-gradient(180deg, #fb7185, #ec4899);
+            color: #fff;
+            box-shadow: 0 12px 28px rgba(236, 72, 153, 0.45), inset 0 -2px 0 rgba(0,0,0,0.15);
+        }
+        .btn-accent:hover { transform: translateY(-2px); }
+        .btn-glow {
+            position: relative;
+        }
+        .btn-glow::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: -10px; height: 16px;
+            border-radius: 9999px;
+            background: radial-gradient(60% 100% at 50% 0%, rgba(245, 158, 11, 0.5), transparent);
+            filter: blur(6px);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .footer a {
+            color: #cbd5e0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Utilities for modern cards and images */
+        .card-elevated { box-shadow: 0 16px 40px rgba(2,6,23,0.12); border-radius: 16px; }
+        .image-rounded { border-radius: 18px; box-shadow: 0 24px 60px rgba(2,6,23,0.25); }
+        .section-heading { font-size: 2.2rem; color: var(--ink-900); text-align: center; margin: 2.5rem 0 1rem; }
+        .muted { color: #64748b; }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #666;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-hands-helping"></i> NGO Connect
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/ngos">NGOs</a></li>
+                <li><a href="/volunteers/leaderboard">Leaderboard</a></li>
+                <li><a href="/about">About</a></li>
+                
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    
+                    <li><a href="/logout">Logout</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    
+        
+    
+
+    
+<div class="container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-hand-holding-heart"></i> Welcome, Test!</h1>
+        <p>Support causes and track your impact</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>₹0</h3>
+            <p>Total Donated</p>
+        </div>
+        <div class="stat-card">
+            <h3>0</h3>
+            <p>Organizations Supported</p>
+        </div>
+        <div class="stat-card">
+            <h3>0</h3>
+            <p>Donations Made</p>
+        </div>
+        <div class="stat-card">
+            <h3>0+</h3>
+            <p>Lives Impacted</p>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3><i class="fas fa-search"></i> Discover NGOs</h3>
+            <div class="form-group">
+                <label for="search_category">Category</label>
+                <select id="search_category">
+                    <option value="">All Categories</option>
+                    <option value="education">Education</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="environment">Environment</option>
+                    <option value="poverty">Poverty Alleviation</option>
+                    <option value="human-rights">Human Rights</option>
+                    <option value="animal-welfare">Animal Welfare</option>
+                    <option value="community-development">Community Development</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="search_location">Location</label>
+                <input type="text" id="search_location" placeholder="Enter city or state">
+            </div>
+            <div class="form-group">
+                <label for="search_amount">Donation Amount</label>
+                <select id="search_amount">
+                    <option value="">Any Amount</option>
+                    <option value="0-1000">₹0 - ₹1,000</option>
+                    <option value="1000-5000">₹1,000 - ₹5,000</option>
+                    <option value="5000-10000">₹5,000 - ₹10,000</option>
+                    <option value="10000-25000">₹10,000 - ₹25,000</option>
+                    <option value="25000+">₹25,000+</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="searchNGOs()">
+                <i class="fas fa-search"></i> Search NGOs
+            </button>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-chart-pie"></i> Donation Impact</h3>
+            <div style="margin-bottom: 1rem;">
+                <p><strong>Your donations have helped:</strong></p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-graduation-cap" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Provide education to 50+ children
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-heartbeat" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Support healthcare for 200+ families
+                    </li>
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fas fa-leaf" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Plant 500+ trees in communities
+                    </li>
+                    <li style="padding: 0.5rem 0;">
+                        <i class="fas fa-home" style="color: #667eea; margin-right: 0.5rem;"></i>
+                        Build 3 homes for families in need
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-history"></i> Donation History</h3>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Organization</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Community Help Foundation</td>
+                        <td>₹20,000</td>
+                        <td>Dec 15, 2024</td>
+                        <td>Poverty Alleviation</td>
+                        <td><span class="badge badge-success">Completed</span></td>
+                        <td>
+                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Education First NGO</td>
+                        <td>₹15,000</td>
+                        <td>Dec 10, 2024</td>
+                        <td>Education</td>
+                        <td><span class="badge badge-success">Completed</span></td>
+                        <td>
+                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Green Earth Initiative</td>
+                        <td>₹10,000</td>
+                        <td>Dec 5, 2024</td>
+                        <td>Environment</td>
+                        <td><span class="badge badge-success">Completed</span></td>
+                        <td>
+                            <a href="#" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h3><i class="fas fa-star"></i> Recommended NGOs</h3>
+            <div id="recommended-ngos">
+                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Community Help Foundation</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Poverty Alleviation • 4.9★ rating</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Helping families in need with food, shelter, and support.</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-heart"></i> Donate Now
+                    </button>
+                </div>
+                <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Education First NGO</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Education • 4.8★ rating</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Providing quality education to underprivileged children.</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-heart"></i> Donate Now
+                    </button>
+                </div>
+                <div style="padding: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0;">Green Earth Initiative</h4>
+                    <p style="margin: 0.25rem 0; color: #666;">Environment • 4.7★ rating</p>
+                    <p style="margin: 0.25rem 0; color: #666;">Working towards a sustainable and green future.</p>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">
+                        <i class="fas fa-heart"></i> Donate Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-gift"></i> Quick Donation</h3>
+            <form>
+                <div class="form-group">
+                    <label for="donation_amount">Amount (₹)</label>
+                    <input type="number" id="donation_amount" name="amount" min="1" step="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="donation_ngo">Select NGO</label>
+                    <select id="donation_ngo" name="ngo" required>
+                        <option value="">Choose an organization</option>
+                        <option value="community-help">Community Help Foundation</option>
+                        <option value="education-first">Education First NGO</option>
+                        <option value="green-earth">Green Earth Initiative</option>
+                        <option value="health-care">Health Care for All</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="donation_message">Message (Optional)</label>
+                    <textarea id="donation_message" name="message" rows="3" placeholder="Leave a message of support..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="anonymous" id="anonymous">
+                        Make this donation anonymous
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-credit-card"></i> Make Donation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-certificate"></i> Your Certificates</h3>
+        <div class="grid grid-3">
+            <div style="text-align: center; padding: 1rem;">
+                <i class="fas fa-award" style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;"></i>
+                <h4>First Donor</h4>
+                <p style="color: #666;">Made your first donation</p>
+                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
+                    <i class="fas fa-download"></i> Download
+                </a>
+            </div>
+            <div style="text-align: center; padding: 1rem;">
+                <i class="fas fa-medal" style="font-size: 3rem; color: #ffd700; margin-bottom: 1rem;"></i>
+                <h4>Generous Supporter</h4>
+                <p style="color: #666;">Donated over ₹1,00,000</p>
+                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
+                    <i class="fas fa-download"></i> Download
+                </a>
+            </div>
+            <div style="text-align: center; padding: 1rem;">
+                <i class="fas fa-heart" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 1rem;"></i>
+                <h4>Community Champion</h4>
+                <p style="color: #666;">Supported 5+ organizations</p>
+                <a href="#" class="btn btn-secondary" style="margin-top: 0.5rem;">
+                    <i class="fas fa-download"></i> Download
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function searchNGOs() {
+    const category = document.getElementById('search_category').value;
+    const location = document.getElementById('search_location').value;
+    const amount = document.getElementById('search_amount').value;
+    
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (category) params.append('category', category);
+    if (location) params.append('city', location);
+    
+    // Make API call to search for NGOs
+    fetch(`/api/search/ngos?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error searching for NGOs: ' + data.error);
+                return;
+            }
+            
+            // Display search results
+            displayNGOSearchResults(data);
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            alert('Error searching for NGOs. Please try again.');
+        });
+}
+
+function displayNGOSearchResults(ngos) {
+    const resultsContainer = document.getElementById('recommended-ngos');
+    
+    if (!ngos || ngos.length === 0) {
+        resultsContainer.innerHTML = '<div style="padding: 1rem; text-align: center; color: #666;">No NGOs found matching your criteria.</div>';
+        return;
+    }
+    
+    let html = '';
+    ngos.forEach(ngo => {
+        const rating = ngo.rating || 0;
+        const category = ngo.category || 'General';
+        const description = ngo.description || 'No description available';
+        
+        html += `
+            <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0;">
+                <h4 style="margin: 0 0 0.5rem 0;">${ngo.organization_name}</h4>
+                <p style="margin: 0.25rem 0; color: #666;">${category} • ${rating}/5★ rating</p>
+                <p style="margin: 0.25rem 0; color: #666;">${description}</p>
+                <p style="margin: 0.25rem 0; color: #666;">${ngo.city}, ${ngo.state}</p>
+                <button class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.5rem 1rem;" onclick="donateToNGO(${ngo.id})">
+                    <i class="fas fa-heart"></i> Donate Now
+                </button>
+            </div>
+        `;
+    });
+    
+    resultsContainer.innerHTML = html;
+}
+
+function donateToNGO(ngoId) {
+    // Set the NGO in the quick donation form
+    const ngoSelect = document.getElementById('donation_ngo');
+    if (ngoSelect) {
+        // Try to find the NGO option by value (this would need to be implemented)
+        alert('Please select the NGO from the "Select NGO" dropdown in the Quick Donation form.');
+        ngoSelect.focus();
+    }
+}
+</script>
+
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h3>NGO Connect</h3>
+                <p>Connecting NGOs, volunteers, and donors to create positive change in communities.</p>
+            </div>
+            <div>
+                <h3>Quick Links</h3>
+                <a href="/">Home</a>
+                <a href="/register">Register</a>
+                <a href="/login">Login</a>
+            </div>
+            <div>
+                <h3>Contact</h3>
+                <a href="mailto:info@ngoconnect.com">info@ngoconnect.com</a>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+    
+</body>
+</html>
